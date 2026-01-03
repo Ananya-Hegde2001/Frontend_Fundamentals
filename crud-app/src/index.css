@@ -5,9 +5,157 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Use system colors for a clean look without introducing a new theme */
+  background: Canvas;
+  color: CanvasText;
+}
+
+.app {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  display: grid;
+  gap: 14px;
+}
+
+.app__title {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+  letter-spacing: 0.2px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.user-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 12px;
+
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-color: color-mix(in srgb, CanvasText 15%, transparent);
+  border-radius: 12px;
+
+  background: color-mix(in srgb, Canvas 96%, CanvasText 4%);
+}
+
+.user-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 240px;
+  flex: 1 1 240px;
+}
+
+.user-form__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.user-form__input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-color: color-mix(in srgb, CanvasText 22%, transparent);
+  background: Canvas;
+  color: CanvasText;
+}
+
+.user-form__input::placeholder {
+  color: color-mix(in srgb, CanvasText 45%, transparent);
+}
+
+.user-form__input:focus {
+  outline: 3px solid color-mix(in srgb, Highlight 35%, transparent);
+  outline-offset: 2px;
+  border-color: Highlight;
+}
+
+.user-form__button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-color: color-mix(in srgb, CanvasText 22%, transparent);
+  background: ButtonFace;
+  color: ButtonText;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.user-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-color: color-mix(in srgb, CanvasText 15%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, Canvas 98%, CanvasText 2%);
+}
+
+.user-list__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.user-list__actions {
+  display: inline-flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.user-list__button {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-color: color-mix(in srgb, CanvasText 22%, transparent);
+  background: ButtonFace;
+  color: ButtonText;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.user-list__button:hover {
+  filter: brightness(0.98);
+}
+
+.user-list__button:active {
+  transform: translateY(1px);
+}
+
+.user-list__button:focus-visible {
+  outline: 3px solid color-mix(in srgb, Highlight 35%, transparent);
+  outline-offset: 2px;
+}
+
+.user-form__button:hover {
+  filter: brightness(0.98);
+}
+
+.user-form__button:active {
+  transform: translateY(1px);
+}
+
+.user-form__button:focus-visible {
+  outline: 3px solid color-mix(in srgb, Highlight 35%, transparent);
+  outline-offset: 2px;
 }
