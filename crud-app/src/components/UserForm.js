@@ -14,14 +14,23 @@ function UserForm({ onSubmit, editUser }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Enter name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <button type="submit">
+    <form className="user-form" onSubmit={handleSubmit}>
+      <div className="user-form__field">
+        <label className="user-form__label" htmlFor="user-name">
+          Name
+        </label>
+        <input
+          id="user-name"
+          className="user-form__input"
+          type="text"
+          placeholder="Enter name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoComplete="off"
+        />
+      </div>
+
+      <button className="user-form__button" type="submit">
         {editUser ? "Update" : "Add"}
       </button>
     </form>
