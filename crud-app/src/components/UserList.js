@@ -1,12 +1,19 @@
 function UserList({ users, onEdit, onDelete }) {
   return (
-    <ul>
+    <ul className="user-list">
       {users.map((user) => (
-        <li key={user.id}>
-          {user.name}
-          <div>
-            <button onClick={() => onEdit(user)}>Edit</button>
-            <button onClick={() => onDelete(user.id)}>Delete</button>
+        <li className="user-list__item" key={user.id}>
+          <span className="user-list__name">{user.name}</span>
+          <div className="user-list__actions">
+            <button className="user-list__button" onClick={() => onEdit(user)}>
+              Edit
+            </button>
+            <button
+              className="user-list__button"
+              onClick={() => onDelete(user.id)}
+            >
+              Delete
+            </button>
           </div>
         </li>
       ))}
