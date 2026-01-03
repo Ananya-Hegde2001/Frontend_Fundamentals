@@ -24,15 +24,11 @@ function Home() {
   };
 
   return (
-    <>
-      <h2>React CRUD App</h2>
+    <main className="app">
+      <h2 className="app__title">React CRUD App</h2>
       <UserForm onSubmit={handleSubmit} editUser={editUser} />
-      <UserList
-        users={users}
-        onEdit={setEditUser}
-        onDelete={handleDelete}
-      />
-    </>
+      <UserList users={users} onEdit={setEditUser} onDelete={handleDelete} />
+    </main>
   );
 }
 
