@@ -27,6 +27,6 @@ function formatDuration(seconds) {
 }
 
 console.log("\n=== BONUS Program 11: Format Duration ===");
-console.log(formatDuration(3661)); 
+console.log(formatDuration(3661));
 console.log(formatDuration(90061));
 console.log(formatDuration(45));
