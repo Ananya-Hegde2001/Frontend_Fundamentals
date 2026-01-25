@@ -1,8 +1,8 @@
 function smartQuotes(text) {
   text = text.replace(/"([^"]*)"/g, '"$1"');
   
-  text = text.replace(/(\w)'(\w)/g, '$1'$2'); // Apostrophes
-  text = text.replace(/'([^']*)'/g, ''$1''); // Single quotes
+  text = text.replace(/(\w)'(\w)/g, '$1'$2');
+  text = text.replace(/'([^']*)'/g, ''$1''); 
   
   text = text.replace(/\b"(\w)/g, '"$1');
   text = text.replace(/(\w)"\b/g, '$1"');
