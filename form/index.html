@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registration Form</title>
+
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>Registration form</h2>
+
+<p class="warning">
+Free delegate passes are not applicable for cybersecurity solution providers,
+technology vendors, security service providers or consulting firms.
+</p>
+
+<form id="form">
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>First Name</label>
+<input type="text" required>
+</div>
+
+<div class="form-group">
+<label>Last Name</label>
+<input type="text" required>
+</div>
+
+<div class="form-group">
+<label>Official Email ID</label>
+<input type="email" id="email" required>
+<span class="note" id="emailError"></span>
+</div>
+
+<div class="form-group">
+<label>Company Name</label>
+<input type="text">
+</div>
+
+<div class="form-group">
+<label>Job Role</label>
+<input type="text">
+</div>
+
+<div class="form-group">
+<label>Country</label>
+<input type="text" value="India (+91)">
+</div>
+
+<div class="form-group">
+<label>Phone Number</label>
+
+<div class="phone-box">
+<div class="prefix">+91</div>
+<input type="tel" pattern="[0-9]{10}" required>
+</div>
+
+</div>
+
+<div class="form-group">
+<label>Industry</label>
+<select required>
+<option value="">Select your Industry</option>
+<option>IT</option>
+<option>Finance</option>
+<option>Healthcare</option>
+<option>Marketing</option>
+<option>Education</option>
+</select>
+</div>
+
+<div class="form-group full">
+<label>LinkedIn Profile Link</label>
+<input type="url" placeholder="https://linkedin.com/in/your-profile">
+</div>
+
+</div>
+
+<button type="submit">Submit</button>
+
+</form>
+</div>
+
+<!-- JavaScript Link -->
+<script src="script.js"></script>
+
+</body>
+</html>
