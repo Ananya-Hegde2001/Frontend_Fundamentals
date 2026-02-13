@@ -1,0 +1,12 @@
+body{
+    background-color: rgb(121, 189, 166);
+    font-size: large;
+}
+h1{
+    font-size: 3rem;
+    font-style: normal;
+    font-weight: bold;   
+}
+button{
+    background-color: rgb(195, 183, 183);
+}
