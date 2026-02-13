@@ -16,12 +16,7 @@ import {
 } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp } from "lucide-react";
-import { DottedMultiLineChart } from "@/components/ui/dotted-multi-line";
-import { GlowingLineChart } from "@/components/ui/glowing-line";
-import { RainbowGlowGradientLineChart } from "@/components/ui/rainbow-glow-gradient-line";
-import { PingingDotChart } from "@/components/ui/pinging-dot-chart";
-import { NumberDotLineChart } from "@/components/ui/number-dot-chart";
+import { TrendingDown } from "lucide-react";
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -39,18 +34,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DottedLineChart() {
+export function NumberDotLineChart() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Dotted Line Chart
+          Number Dot Chart
           <Badge
             variant="outline"
-            className="text-green-500 bg-green-500/10 border-none ml-2"
+            className="text-red-500 bg-red-500/10 border-none ml-2"
           >
-            <TrendingUp className="h-4 w-4" />
-            <span>5.2%</span>
+            <TrendingDown className="h-4 w-4" />
+            <span>-5.2%</span>
           </Badge>
         </CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -75,14 +70,16 @@ export function DottedLineChart() {
             />
             <ChartTooltip
               cursor={false}
+              cursorStyle={{}}
               content={<ChartTooltipContent hideLabel />}
             />
             <Line
               dataKey="desktop"
               type="linear"
               stroke="var(--color-desktop)"
-              dot={false}
               strokeDasharray="4 4"
+              dot={<CustomizedDot />}
+              activeDot={() => <></>}
             />
           </LineChart>
         </ChartContainer>
@@ -91,17 +88,28 @@ export function DottedLineChart() {
   );
 }
 
-export default function App() {
+const CustomizedDot = (
+  props: React.SVGProps<SVGCircleElement> & { value?: number }
+) => {
+  const { cx, cy, stroke, value } = props;
+
   return (
-    <div className="p-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <DottedLineChart />
-        <PingingDotChart />
-        <NumberDotLineChart />
-        <DottedMultiLineChart />
-        <GlowingLineChart />
-        <RainbowGlowGradientLineChart />
-      </div>
-    </div>
-  )
-}
+    <g>
+      {/* Main dot */}
+      <circle cx={cx} cy={cy} r={9} fill={stroke} />
+      <text
+        className="dark:text-black text-white"
+        x={cx}
+        y={cy}
+        textAnchor="middle"
+        dy={8}
+        fontSize={8}
+        fontWeight={600}
+        fill="currentColor"
+        transform="translate(0, -5)"
+      >
+        {value?.toString()}
+      </text>
+    </g>
+  );
+};

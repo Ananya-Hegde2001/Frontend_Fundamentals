@@ -17,11 +17,6 @@ import {
 import type { ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
-import { DottedMultiLineChart } from "@/components/ui/dotted-multi-line";
-import { GlowingLineChart } from "@/components/ui/glowing-line";
-import { RainbowGlowGradientLineChart } from "@/components/ui/rainbow-glow-gradient-line";
-import { PingingDotChart } from "@/components/ui/pinging-dot-chart";
-import { NumberDotLineChart } from "@/components/ui/number-dot-chart";
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -39,12 +34,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DottedLineChart() {
+export function PingingDotChart() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Dotted Line Chart
+          Pinging Dot Chart
           <Badge
             variant="outline"
             className="text-green-500 bg-green-500/10 border-none ml-2"
@@ -81,8 +76,8 @@ export function DottedLineChart() {
               dataKey="desktop"
               type="linear"
               stroke="var(--color-desktop)"
-              dot={false}
               strokeDasharray="4 4"
+              dot={<CustomizedDot />}
             />
           </LineChart>
         </ChartContainer>
@@ -91,17 +86,36 @@ export function DottedLineChart() {
   );
 }
 
-export default function App() {
+const CustomizedDot = (props: React.SVGProps<SVGCircleElement>) => {
+  const { cx, cy, stroke } = props;
+
   return (
-    <div className="p-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <DottedLineChart />
-        <PingingDotChart />
-        <NumberDotLineChart />
-        <DottedMultiLineChart />
-        <GlowingLineChart />
-        <RainbowGlowGradientLineChart />
-      </div>
-    </div>
-  )
-}
+    <g>
+      {/* Main dot */}
+      <circle cx={cx} cy={cy} r={3} fill={stroke} />
+      {/* Ping animation circles */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={3}
+        stroke={stroke}
+        fill="none"
+        strokeWidth="1"
+        opacity="0.8"
+      >
+        <animate
+          attributeName="r"
+          values="3;10"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="opacity"
+          values="0.8;0"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      </circle>
+    </g>
+  );
+};
