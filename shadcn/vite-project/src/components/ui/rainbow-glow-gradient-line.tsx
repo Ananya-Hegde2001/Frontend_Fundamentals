@@ -16,10 +16,7 @@ import {
 } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp } from "lucide-react";
-import { DottedMultiLineChart } from "@/components/ui/dotted-multi-line";
-import { GlowingLineChart } from "@/components/ui/glowing-line";
-import { RainbowGlowGradientLineChart } from "@/components/ui/rainbow-glow-gradient-line";
+import { TrendingDown } from "lucide-react";
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -37,18 +34,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DottedLineChart() {
+export function RainbowGlowGradientLineChart() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Dotted Line Chart
+          Rainbow Line Chart
           <Badge
             variant="outline"
-            className="text-green-500 bg-green-500/10 border-none ml-2"
+            className="text-red-500 bg-red-500/10 border-none ml-2"
           >
-            <TrendingUp className="h-4 w-4" />
-            <span>5.2%</span>
+            <TrendingDown className="h-4 w-4" />
+            <span>-5.2%</span>
           </Badge>
         </CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -77,27 +74,35 @@ export function DottedLineChart() {
             />
             <Line
               dataKey="desktop"
-              type="linear"
-              stroke="var(--color-desktop)"
+              type="bump"
+              stroke="url(#colorUv)"
               dot={false}
-              strokeDasharray="4 4"
+              strokeWidth={2}
+              filter="url(#rainbow-line-glow)"
             />
+            <defs>
+              <linearGradient id="colorUv" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#0B84CE" stopOpacity={0.8} />
+                <stop offset="20%" stopColor="#224CD1" stopOpacity={0.8} />
+                <stop offset="40%" stopColor="#3A11C7" stopOpacity={0.8} />
+                <stop offset="60%" stopColor="#7107C6" stopOpacity={0.8} />
+                <stop offset="80%" stopColor="#C900BD" stopOpacity={0.8} />
+                <stop offset="100%" stopColor="#D80155" stopOpacity={0.8} />
+              </linearGradient>
+              <filter
+                id="rainbow-line-glow"
+                x="-20%"
+                y="-20%"
+                width="140%"
+                height="140%"
+              >
+                <feGaussianBlur stdDeviation="10" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
           </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>
   );
-}
-
-export default function App() {
-  return (
-    <div className="p-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <DottedLineChart />
-        <DottedMultiLineChart />
-        <GlowingLineChart />
-        <RainbowGlowGradientLineChart />
-      </div>
-    </div>
-  )
 }

@@ -16,18 +16,15 @@ import {
 } from "@/components/ui/chart";
 import type { ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp } from "lucide-react";
-import { DottedMultiLineChart } from "@/components/ui/dotted-multi-line";
-import { GlowingLineChart } from "@/components/ui/glowing-line";
-import { RainbowGlowGradientLineChart } from "@/components/ui/rainbow-glow-gradient-line";
+import { TrendingDown } from "lucide-react";
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", desktop: 186, mobile: 87 },
+  { month: "February", desktop: 305, mobile: 163 },
+  { month: "March", desktop: 237, mobile: 142 },
+  { month: "April", desktop: 73, mobile: 195 },
+  { month: "May", desktop: 209, mobile: 118 },
+  { month: "June", desktop: 214, mobile: 231 },
 ];
 
 const chartConfig = {
@@ -35,20 +32,24 @@ const chartConfig = {
     label: "Desktop",
     color: "var(--chart-2)",
   },
+  mobile: {
+    label: "Mobile",
+    color: "var(--chart-5)",
+  },
 } satisfies ChartConfig;
 
-export function DottedLineChart() {
+export function DottedMultiLineChart() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Dotted Line Chart
+          Multi Line Chart
           <Badge
             variant="outline"
-            className="text-green-500 bg-green-500/10 border-none ml-2"
+            className="text-red-500 bg-red-500/10 border-none ml-2"
           >
-            <TrendingUp className="h-4 w-4" />
-            <span>5.2%</span>
+            <TrendingDown className="h-4 w-4" />
+            <span>-5.2%</span>
           </Badge>
         </CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -82,22 +83,10 @@ export function DottedLineChart() {
               dot={false}
               strokeDasharray="4 4"
             />
+            <Line dataKey="mobile" type="linear" stroke="var(--color-mobile)" />
           </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>
   );
-}
-
-export default function App() {
-  return (
-    <div className="p-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <DottedLineChart />
-        <DottedMultiLineChart />
-        <GlowingLineChart />
-        <RainbowGlowGradientLineChart />
-      </div>
-    </div>
-  )
 }

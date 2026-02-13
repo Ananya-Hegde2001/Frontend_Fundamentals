@@ -17,17 +17,14 @@ import {
 import type { ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp } from "lucide-react";
-import { DottedMultiLineChart } from "@/components/ui/dotted-multi-line";
-import { GlowingLineChart } from "@/components/ui/glowing-line";
-import { RainbowGlowGradientLineChart } from "@/components/ui/rainbow-glow-gradient-line";
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "January", desktop: 186, mobile: 87 },
+  { month: "February", desktop: 305, mobile: 163 },
+  { month: "March", desktop: 237, mobile: 142 },
+  { month: "April", desktop: 73, mobile: 195 },
+  { month: "May", desktop: 209, mobile: 118 },
+  { month: "June", desktop: 214, mobile: 231 },
 ];
 
 const chartConfig = {
@@ -35,14 +32,18 @@ const chartConfig = {
     label: "Desktop",
     color: "var(--chart-2)",
   },
+  mobile: {
+    label: "Mobile",
+    color: "var(--chart-5)",
+  },
 } satisfies ChartConfig;
 
-export function DottedLineChart() {
+export function GlowingLineChart() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Dotted Line Chart
+          Glowing Line Chart
           <Badge
             variant="outline"
             className="text-green-500 bg-green-500/10 border-none ml-2"
@@ -77,27 +78,35 @@ export function DottedLineChart() {
             />
             <Line
               dataKey="desktop"
-              type="linear"
-              stroke="var(--color-desktop)"
+              type="bump"
+              stroke="var(--chart-2)"
               dot={false}
-              strokeDasharray="4 4"
+              strokeWidth={2}
+              filter="url(#rainbow-line-glow)"
             />
+            <Line
+              dataKey="mobile"
+              type="bump"
+              stroke="var(--chart-5)"
+              dot={false}
+              strokeWidth={2}
+              filter="url(#rainbow-line-glow)"
+            />
+            <defs>
+              <filter
+                id="rainbow-line-glow"
+                x="-20%"
+                y="-20%"
+                width="140%"
+                height="140%"
+              >
+                <feGaussianBlur stdDeviation="10" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
           </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>
   );
-}
-
-export default function App() {
-  return (
-    <div className="p-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        <DottedLineChart />
-        <DottedMultiLineChart />
-        <GlowingLineChart />
-        <RainbowGlowGradientLineChart />
-      </div>
-    </div>
-  )
 }
