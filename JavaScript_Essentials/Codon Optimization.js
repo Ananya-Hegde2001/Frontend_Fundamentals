@@ -1,3 +1,5 @@
+//codon optimization for protein expression in a specific organism
+
 function codonOptimization(proteinSeq, organism = 'human') {
   const codonTable = {
     'A': ['GCT', 'GCC', 'GCA', 'GCG'],
