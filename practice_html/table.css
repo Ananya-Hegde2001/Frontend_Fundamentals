@@ -1,0 +1,13 @@
+table{
+  padding-top:3rem;
+  padding-left:30rem
+    
+}
+th{
+  background-color:green;
+  padding:0.5rem;
+  font-size:1rem;
+}
+td{
+  text-align:center;
+}
