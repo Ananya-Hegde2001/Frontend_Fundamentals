@@ -1,5 +1,23 @@
 .App {
   text-align: center;
-  margin-top: 100px;
-  font-family: Arial;
+  padding: 20px;
+}
+
+.todo-list {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.todo-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
