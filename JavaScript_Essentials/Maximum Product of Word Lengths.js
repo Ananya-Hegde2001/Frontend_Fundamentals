@@ -4,7 +4,7 @@ function maxProductWordLengths(words) {
   
   for (let i = 0; i < n; i++) {
     for (let c of words[i]) {
-      const bit = c.charCodeAt(0) - 97; // 'a' = 0, 'b' = 1, etc.
+      const bit = c.charCodeAt(0) - 97; 
       masks[i] |= (1 << bit);
     }
   }
