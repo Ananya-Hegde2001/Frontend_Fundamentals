@@ -7,6 +7,7 @@ import {
   MarkerTooltip,
 } from "@/components/ui/map";
 import { Card } from "@/components/ui/card";
+import ClusterExample from "./cluster-example";
 
 const locations = [
   {
@@ -69,6 +70,9 @@ export default function Home() {
       <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-2">
         <MarkersExample />
         <MyMap />
+        <div className="md:col-span-2">
+          <ClusterExample />
+        </div>
       </div>
     </div>
   );
