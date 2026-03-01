@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/map";
 import { Card } from "@/components/ui/card";
 import ClusterExample from "./cluster-example";
+import RouteExample from "./route-example";
 
 const locations = [
   {
@@ -72,6 +73,9 @@ export default function Home() {
         <MyMap />
         <div className="md:col-span-2">
           <ClusterExample />
+        </div>
+        <div className="md:col-span-2">
+          <RouteExample />
         </div>
       </div>
     </div>
