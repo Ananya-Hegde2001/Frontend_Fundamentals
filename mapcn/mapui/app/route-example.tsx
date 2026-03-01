@@ -23,7 +23,7 @@ const stops = [
   { name: "Central Park", lng: -73.9654, lat: 40.7829 },
 ];
 
-export default function RouteExample() {
+export function RouteExample() {
   return (
     <Card className="h-[400px] w-full overflow-hidden p-0">
       <Map center={[-73.98, 40.75]} zoom={11.2}>
