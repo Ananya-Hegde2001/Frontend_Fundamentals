@@ -13,7 +13,7 @@ doStuff()
 // semicolons in this guide.
 
 ///////////////////////////////////
-// 1. Numbers, Strings and Operators
+/* 1. Numbers, Strings and Operators */
 
 // JavaScript has one number type (which is a 64-bit IEEE 754 double).
 // Doubles have a 52-bit mantissa, which is enough to store integers.
