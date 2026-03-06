@@ -8,10 +8,13 @@ h1{
     font-size: 20px;
     font-weight: bold;
     font-style: italic;
+    line-height: 1;
+    text-align: center;
+    line-spacing: 5px;
     text-decoration: underline;
-    text-transform: capitalize;
-    color: white;
-    background-color:rgb(158, 9, 9);
+    text-transform: uppercase;
+    color:#70eca6;
+    background-color:#8961df;
     border-radius: 10px;
     padding: 10px;
 }

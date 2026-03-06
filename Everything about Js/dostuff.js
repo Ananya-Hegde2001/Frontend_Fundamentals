@@ -21,6 +21,7 @@ doStuff()
 3; // = 3
 1.5; // = 1.5
 
+// Add Studentship to the above code
 // Some basic arithmetic works as you'd expect.
 1 + 1; // = 2
 0.1 + 0.2; // = 0.30000000000000004
