@@ -4,6 +4,7 @@ h1{
 }
 
 .text{
+    display: inline-block;
     font-family: 'poppins' sand-serif;
     font-size: 20px;
     font-weight: bold;
