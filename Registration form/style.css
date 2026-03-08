@@ -1,0 +1,28 @@
+body{
+    background-color: #dad2d2;
+}
+
+.container{
+    margin-top: 100px;
+    border-radius: 30px;
+    background-color:#c9b3b3;
+    padding: 30px;
+    width: 50%;
+    scroll-behavior: smooth;
+    margin-left: 10%;
+    align-items: left;
+}
+p{
+    color: red;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+}
+
+.field{
+    display: flex;
+    flex-direction: column;
+}
