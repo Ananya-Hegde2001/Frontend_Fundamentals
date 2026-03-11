@@ -1,0 +1,32 @@
+body{
+    background-color: aliceblue;
+    padding: 100px 30px;
+}
+
+.container{
+    background:white;
+    padding:35px;
+    width:750px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+p{
+    color: red;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-title{
+    text-shadow: 0 0 4px black;;
+}
+
