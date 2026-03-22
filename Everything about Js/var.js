@@ -1,6 +1,6 @@
 var name = "Ananya";
-console.log(name); // Ananya
+console.log(name); 
 
-var name = "Hegde";  // redeclared
-name = "AI Dev";     // updated
-console.log(name); // AI Dev
+var name = "Hegde";  
+name = "AI Dev";     
+console.log(name); 
