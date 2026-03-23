@@ -263,6 +263,7 @@ code {
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
 }
 
 .grip {
@@ -277,6 +278,64 @@ code {
 
 .chipText {
   flex: 1;
+}
+
+.chipDetail {
+  margin-top: 12px;
+  border: 1px solid rgba(39, 48, 71, 0.85);
+  border-radius: 14px;
+  background: rgba(16, 21, 34, 0.78);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.chipDetailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 0;
+}
+
+.chipDetailTitle {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.chipDetailBody {
+  padding: 10px 12px 12px;
+  color: var(--text1);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.chipDetailHint {
+  padding: 0 12px 12px;
+  color: rgba(174, 182, 194, 0.75);
+  font-size: 12px;
+}
+
+.iconButton {
+  appearance: none;
+  border: 1px solid rgba(39, 48, 71, 0.9);
+  background: rgba(15, 20, 34, 0.65);
+  color: var(--text0);
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  line-height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  border-color: rgba(199, 214, 255, 0.35);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid rgba(199, 214, 255, 0.55);
+  outline-offset: 2px;
 }
 
 .side {
