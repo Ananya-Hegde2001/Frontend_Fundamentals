@@ -17,6 +17,7 @@ const ambientTransition = {
 };
 
 const CONTROLS_STORAGE_KEY = "motion-lab.controls.v1";
+const CHIP_ORDER_STORAGE_KEY = "motion-lab.chipOrder.v1";
 
 const DEFAULT_CONTROLS = Object.freeze({
   stiffness: 260,
@@ -51,6 +52,37 @@ function persistControlsToStorage(controls) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage?.setItem(CONTROLS_STORAGE_KEY, JSON.stringify(controls));
+  } catch {
+    // ignore
+  }
+}
+
+function loadChipOrderFromStorage(allowedIds) {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage?.getItem(CHIP_ORDER_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+
+    const allowed = new Set(allowedIds);
+    const next = [];
+    for (const id of parsed) {
+      if (typeof id === "string" && allowed.has(id) && !next.includes(id)) next.push(id);
+    }
+    for (const id of allowedIds) {
+      if (!next.includes(id)) next.push(id);
+    }
+    return next;
+  } catch {
+    return null;
+  }
+}
+
+function persistChipOrderToStorage(order) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage?.setItem(CHIP_ORDER_STORAGE_KEY, JSON.stringify(order));
   } catch {
     // ignore
   }
@@ -115,7 +147,12 @@ export default function App() {
     return map;
   }, [chipData]);
 
-  const [chipOrder, setChipOrder] = useState(() => chipData.map((c) => c.id));
+  const allowedChipIds = useMemo(() => chipData.map((c) => c.id), [chipData]);
+
+  const [chipOrder, setChipOrder] = useState(() => {
+    const stored = loadChipOrderFromStorage(allowedChipIds);
+    return stored ?? allowedChipIds;
+  });
   const [selectedChipId, setSelectedChipId] = useState(null);
 
   const deck = useMemo(
@@ -192,6 +229,14 @@ export default function App() {
     lastSavedControls.current = serialized;
     persistControlsToStorage(controls);
   }, [controls]);
+
+  const lastSavedChipOrder = useRef("");
+  useEffect(() => {
+    const serialized = JSON.stringify(chipOrder);
+    if (serialized === lastSavedChipOrder.current) return;
+    lastSavedChipOrder.current = serialized;
+    persistChipOrderToStorage(chipOrder);
+  }, [chipOrder]);
 
   useEffect(() => {
     if (!selectedChipId) return;
@@ -450,10 +495,19 @@ export default function App() {
                   as="li"
                   className="listItem reorderItem"
                   layoutId={`chip-${chip.id}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open details for ${chip.label}`}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.99 }}
                   transition={cardTransition}
                   onClick={() => setSelectedChipId(chip.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedChipId(chip.id);
+                    }
+                  }}
                 >
                   <span className="grip" aria-hidden="true" />
                   <span className="chipText">{chip.label}</span>
