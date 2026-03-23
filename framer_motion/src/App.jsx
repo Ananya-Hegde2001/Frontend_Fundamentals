@@ -5,6 +5,7 @@ import {
   motion,
   useMotionTemplate,
   useMotionValue,
+  useTransform,
   useReducedMotion,
   useSpring,
 } from "motion/react";
@@ -64,6 +65,11 @@ export default function App() {
   const spotlightYSpring = useSpring(spotlightY, { stiffness: 240, damping: 28 });
   const spotlightXpx = useMotionTemplate`${spotlightXSpring}px`;
   const spotlightYpx = useMotionTemplate`${spotlightYSpring}px`;
+
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const tiltXSpring = useSpring(tiltX, { stiffness: 240, damping: 26 });
+  const tiltYSpring = useSpring(tiltY, { stiffness: 240, damping: 26 });
 
   const activeDeckCard = deck[deckIndex % deck.length];
 
@@ -133,17 +139,33 @@ export default function App() {
           layout
           transition={cardTransition}
           whileHover={{ y: -2 }}
-          style={{ "--mx": spotlightXpx, "--my": spotlightYpx }}
+          style={{
+            "--mx": spotlightXpx,
+            "--my": spotlightYpx,
+            transformPerspective: 900,
+            rotateX: motionOff ? 0 : tiltXSpring,
+            rotateY: motionOff ? 0 : tiltYSpring,
+          }}
           onPointerMove={(e) => {
             if (motionOff) return;
             const rect = e.currentTarget.getBoundingClientRect();
-            spotlightX.set(e.clientX - rect.left);
-            spotlightY.set(e.clientY - rect.top);
+            const localX = e.clientX - rect.left;
+            const localY = e.clientY - rect.top;
+
+            spotlightX.set(localX);
+            spotlightY.set(localY);
+
+            const px = localX / rect.width;
+            const py = localY / rect.height;
+            tiltY.set((px - 0.5) * 10);
+            tiltX.set(-(py - 0.5) * 8);
           }}
           onPointerLeave={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
             spotlightX.set(rect.width * 0.5);
             spotlightY.set(rect.height * 0.25);
+            tiltX.set(0);
+            tiltY.set(0);
           }}
         >
           <div className="cardContent">
@@ -277,58 +299,17 @@ export default function App() {
           <div className="sideTitle">Swipe Deck</div>
           <div className="deck">
             <AnimatePresence custom={deckDir} mode="popLayout">
-              <motion.div
+              <DeckCard
                 key={activeDeckCard.id + deckIndex}
-                className="deckCard"
-                custom={deckDir}
-                drag={motionOff ? false : "x"}
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.22}
-                onDragEnd={(_, info) => {
-                  if (motionOff) return;
-                  const offset = info.offset.x;
-                  const velocity = info.velocity.x;
-                  const throwIt = Math.abs(offset) > 120 || Math.abs(velocity) > 600;
-
-                  if (!throwIt) return;
-
-                  const dir = offset !== 0 ? Math.sign(offset) : Math.sign(velocity);
-                  setDeckDir(dir || 1);
+                dir={deckDir}
+                card={activeDeckCard}
+                motionOff={motionOff}
+                transition={cardTransition}
+                onThrow={(dir) => {
+                  setDeckDir(dir);
                   setDeckIndex((i) => i + 1);
                 }}
-                variants={{
-                  initial: (dir) => ({
-                    opacity: 0,
-                    x: motionOff ? 0 : -dir * 160,
-                    rotate: motionOff ? 0 : -dir * 8,
-                    scale: 0.98,
-                  }),
-                  animate: {
-                    opacity: 1,
-                    x: 0,
-                    rotate: 0,
-                    scale: 1,
-                  },
-                  exit: (dir) => ({
-                    opacity: 0,
-                    x: motionOff ? 0 : dir * 240,
-                    rotate: motionOff ? 0 : dir * 10,
-                    scale: 0.96,
-                    transition: { duration: motionOff ? 0.01 : 0.18 },
-                  }),
-                }}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={cardTransition}
-                whileTap={motionOff ? undefined : { scale: 0.99 }}
-              >
-                <div className="deckGlow" aria-hidden="true" />
-                <div className="deckBody">
-                  <div className="deckTitle">{activeDeckCard.title}</div>
-                  <div className="deckSub">{activeDeckCard.subtitle}</div>
-                </div>
-              </motion.div>
+              />
             </AnimatePresence>
 
             <div className="dots" aria-hidden="true">
@@ -345,5 +326,77 @@ export default function App() {
         Tip: move your cursor over the card, reorder chips, and throw the deck.
       </footer>
     </div>
+  );
+}
+
+function DeckCard({ card, dir, motionOff, transition, onThrow }) {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-240, 0, 240], [-10, 0, 10]);
+  const keepOpacity = useTransform(x, [20, 120], [0, 1]);
+  const skipOpacity = useTransform(x, [-120, -20], [1, 0]);
+  const glow = useTransform(x, [-240, 0, 240], [0.18, 0.08, 0.18]);
+
+  return (
+    <motion.div
+      className="deckCard"
+      custom={dir}
+      drag={motionOff ? false : "x"}
+      style={{ x: motionOff ? 0 : x, rotate: motionOff ? 0 : rotate }}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.22}
+      onDragEnd={(_, info) => {
+        if (motionOff) return;
+        const offset = info.offset.x;
+        const velocity = info.velocity.x;
+        const throwIt = Math.abs(offset) > 120 || Math.abs(velocity) > 600;
+
+        if (!throwIt) return;
+
+        const nextDir = offset !== 0 ? Math.sign(offset) : Math.sign(velocity);
+        onThrow(nextDir || 1);
+      }}
+      variants={{
+        initial: (dir) => ({
+          opacity: 0,
+          x: motionOff ? 0 : -dir * 160,
+          rotate: motionOff ? 0 : -dir * 8,
+          scale: 0.985,
+        }),
+        animate: {
+          opacity: 1,
+          x: 0,
+          rotate: 0,
+          scale: 1,
+        },
+        exit: (dir) => ({
+          opacity: 0,
+          x: motionOff ? 0 : dir * 240,
+          rotate: motionOff ? 0 : dir * 10,
+          scale: 0.96,
+          transition: { duration: motionOff ? 0.01 : 0.18 },
+        }),
+      }}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={transition}
+      whileTap={motionOff ? undefined : { scale: 0.99 }}
+    >
+      <motion.div className="deckGlow" aria-hidden="true" style={{ opacity: glow }} />
+
+      <div className="deckLabels" aria-hidden="true">
+        <motion.div className="labelPill labelKeep" style={{ opacity: keepOpacity }}>
+          KEEP
+        </motion.div>
+        <motion.div className="labelPill labelSkip" style={{ opacity: skipOpacity }}>
+          SKIP
+        </motion.div>
+      </div>
+
+      <div className="deckBody">
+        <div className="deckTitle">{card.title}</div>
+        <div className="deckSub">{card.subtitle}</div>
+      </div>
+    </motion.div>
   );
 }
