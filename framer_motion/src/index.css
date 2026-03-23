@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
 
   --bg0: #0b0d10;
   --bg1: #0e1220;
@@ -9,10 +9,111 @@
   --border1: #2b3a63;
   --text0: #e8edf2;
   --text1: #aeb6c2;
+  --text2: #d3dae5;
   --accent0: #c7d6ff;
   --accent1: #36507a;
+  --glowA: rgba(54, 80, 122, 0.22);
+  --glowB: rgba(43, 58, 99, 0.22);
+  --blobAInner: rgba(199, 214, 255, 0.85);
+  --blobAOuter: rgba(54, 80, 122, 0.2);
+  --blobBInner: rgba(54, 80, 122, 0.75);
+  --blobBOuter: rgba(43, 58, 99, 0.16);
+  --spotA: rgba(199, 214, 255, 0.16);
+  --spotB: rgba(54, 80, 122, 0.15);
+  --gradA: rgba(199, 214, 255, 1);
+  --gradB: rgba(54, 80, 122, 1);
+
+  --glassBorder: rgba(39, 48, 71, 0.9);
+  --glassBorderSoft: rgba(39, 48, 71, 0.7);
+  --glassBorderStrong: rgba(43, 58, 99, 0.95);
+  --glassBg: rgba(16, 21, 34, 0.6);
+  --glassBgSoft: rgba(15, 20, 34, 0.45);
+  --glassBgStrong: rgba(15, 20, 34, 0.7);
+  --glassBgStrong2: rgba(16, 21, 34, 0.78);
+  --glassBgPill: rgba(20, 28, 48, 0.55);
+  --glassBgPill2: rgba(20, 28, 48, 0.7);
+  --glassBgLabel: rgba(11, 13, 16, 0.35);
+  --glassDivider: rgba(39, 48, 71, 0.65);
+  --glassHoverBg: rgba(16, 22, 38, 0.78);
+  --glassHoverBorder: rgba(199, 214, 255, 0.25);
+  --focusRing: rgba(199, 214, 255, 0.55);
+  --rangeAccent: rgba(199, 214, 255, 0.8);
+
+  --primaryBtnBg: rgba(199, 214, 255, 0.92);
+  --primaryBtnText: #0b0d10;
+
+  --cardGradTop: rgba(16, 21, 34, 0.92);
+  --cardGradBot: rgba(14, 18, 32, 0.84);
+  --accentSurface: rgba(19, 28, 48, 0.45);
+  --accentBorder: rgba(54, 80, 122, 0.95);
+
+  --keepText: rgba(199, 214, 255, 0.95);
+  --keepBorder: rgba(199, 214, 255, 0.35);
+  --skipText: rgba(174, 182, 194, 0.95);
+  --dotBg: rgba(174, 182, 194, 0.35);
   --shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
   --shadowSoft: 0 12px 34px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --bg0: #f7f9fc;
+  --bg1: #edf2fa;
+  --panel0: #ffffff;
+  --panel1: #f5f7fb;
+  --border0: rgba(15, 20, 34, 0.12);
+  --border1: rgba(15, 20, 34, 0.16);
+  --text0: #0b0d10;
+  --text1: rgba(15, 20, 34, 0.7);
+  --text2: rgba(15, 20, 34, 0.85);
+  --accent0: #1c2a4a;
+  --accent1: #36507a;
+  --glowA: rgba(54, 80, 122, 0.14);
+  --glowB: rgba(199, 214, 255, 0.22);
+  --blobAInner: rgba(54, 80, 122, 0.22);
+  --blobAOuter: rgba(199, 214, 255, 0.22);
+  --blobBInner: rgba(199, 214, 255, 0.3);
+  --blobBOuter: rgba(54, 80, 122, 0.16);
+  --spotA: rgba(54, 80, 122, 0.12);
+  --spotB: rgba(199, 214, 255, 0.22);
+  --gradA: rgba(28, 42, 74, 1);
+  --gradB: rgba(54, 80, 122, 1);
+  --shadow: 0 18px 55px rgba(15, 20, 34, 0.12);
+  --shadowSoft: 0 12px 34px rgba(15, 20, 34, 0.08);
+
+  --glassBorder: rgba(15, 20, 34, 0.14);
+  --glassBorderSoft: rgba(15, 20, 34, 0.12);
+  --glassBorderStrong: rgba(15, 20, 34, 0.16);
+  --glassBg: rgba(255, 255, 255, 0.72);
+  --glassBgSoft: rgba(255, 255, 255, 0.68);
+  --glassBgStrong: rgba(255, 255, 255, 0.82);
+  --glassBgStrong2: rgba(255, 255, 255, 0.85);
+  --glassBgPill: rgba(255, 255, 255, 0.7);
+  --glassBgPill2: rgba(255, 255, 255, 0.78);
+  --glassBgLabel: rgba(255, 255, 255, 0.45);
+  --glassDivider: rgba(15, 20, 34, 0.12);
+  --glassHoverBg: rgba(255, 255, 255, 0.9);
+  --glassHoverBorder: rgba(54, 80, 122, 0.22);
+  --focusRing: rgba(54, 80, 122, 0.35);
+  --rangeAccent: rgba(54, 80, 122, 0.65);
+
+  --primaryBtnBg: rgba(28, 42, 74, 0.92);
+  --primaryBtnText: rgba(255, 255, 255, 0.96);
+
+  --cardGradTop: rgba(255, 255, 255, 0.92);
+  --cardGradBot: rgba(245, 247, 251, 0.86);
+  --accentSurface: rgba(199, 214, 255, 0.35);
+  --accentBorder: rgba(54, 80, 122, 0.35);
+
+  --keepText: rgba(28, 42, 74, 0.95);
+  --keepBorder: rgba(28, 42, 74, 0.28);
+  --skipText: rgba(15, 20, 34, 0.7);
+  --dotBg: rgba(54, 80, 122, 0.22);
 }
 
 * {
@@ -27,8 +128,8 @@ body {
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 800px at 20% -10%, rgba(54, 80, 122, 0.22), transparent 60%),
-    radial-gradient(1000px 700px at 110% 20%, rgba(43, 58, 99, 0.22), transparent 55%),
+  background: radial-gradient(1200px 800px at 20% -10%, var(--glowA), transparent 60%),
+    radial-gradient(1000px 700px at 110% 20%, var(--glowB), transparent 55%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   color: var(--text0);
 }
@@ -61,7 +162,7 @@ code {
 .bgBlobA {
   top: -160px;
   left: -140px;
-  background: radial-gradient(circle at 30% 30%, rgba(199, 214, 255, 0.85), rgba(54, 80, 122, 0.2));
+  background: radial-gradient(circle at 30% 30%, var(--blobAInner), var(--blobAOuter));
 }
 
 .bgBlobB {
@@ -69,13 +170,196 @@ code {
   right: -180px;
   width: 520px;
   height: 520px;
-  background: radial-gradient(circle at 40% 40%, rgba(54, 80, 122, 0.75), rgba(43, 58, 99, 0.16));
+  background: radial-gradient(circle at 40% 40%, var(--blobBInner), var(--blobBOuter));
 }
 
 .header {
   margin-bottom: 18px;
   position: relative;
   z-index: 1;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.brandDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(199, 214, 255, 0.9);
+  box-shadow: 0 0 0 6px rgba(199, 214, 255, 0.08);
+}
+
+.brandText {
+  color: var(--text0);
+}
+
+.navPills {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.pill {
+  appearance: none;
+  border: 1px solid var(--glassBorder);
+  background: var(--glassBg);
+  backdrop-filter: blur(8px);
+  color: var(--text0);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.pill:hover {
+  border-color: var(--glassHoverBorder);
+}
+
+.pill:focus-visible {
+  outline: 2px solid var(--focusRing);
+  outline-offset: 2px;
+}
+
+.hero {
+  display: grid;
+  gap: 14px;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 16px;
+  }
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+.heroGradient {
+  background: linear-gradient(90deg, var(--gradA), var(--gradB));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroSubtitle {
+  margin: 10px 0 0;
+  color: var(--text1);
+  max-width: 56ch;
+}
+
+.heroBullets {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.bullet {
+  border: 1px solid var(--glassBorderSoft);
+  background: var(--glassBgSoft);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text2);
+}
+
+.heroCtas {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cta {
+  appearance: none;
+  border-radius: 12px;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  border: 1px solid var(--glassBorder);
+}
+
+.ctaPrimary {
+  background: var(--primaryBtnBg);
+  color: var(--primaryBtnText);
+  border-color: var(--keepBorder);
+}
+
+.ctaSecondary {
+  background: var(--glassBg);
+  color: var(--text0);
+  backdrop-filter: blur(8px);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--focusRing);
+  outline-offset: 2px;
+}
+
+.heroRight {
+  display: grid;
+}
+
+.heroCard {
+  border: 1px solid var(--glassBorderSoft);
+  border-radius: 18px;
+  background: radial-gradient(800px 320px at 30% 0%, var(--spotA), transparent 55%),
+    linear-gradient(180deg, var(--cardGradTop), var(--cardGradBot));
+  box-shadow: var(--shadow);
+  padding: 14px;
+  overflow: hidden;
+}
+
+.heroCardTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.heroPill {
+  font-size: 12px;
+  color: var(--accent0);
+  border: 1px solid var(--glassBorderStrong);
+  background: var(--glassBgPill);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.heroCardTitle {
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.heroCardSub {
+  margin-top: 6px;
+  color: var(--text1);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.heroCardHint {
+  margin-top: 12px;
+  color: var(--text1);
+  font-size: 12px;
 }
 
 .title {
@@ -101,8 +385,8 @@ code {
 
 .button {
   appearance: none;
-  border: 1px solid rgba(39, 48, 71, 0.9);
-  background: rgba(16, 21, 34, 0.72);
+  border: 1px solid var(--glassBorder);
+  background: var(--glassBg);
   backdrop-filter: blur(8px);
   color: inherit;
   padding: 10px 14px;
@@ -114,17 +398,18 @@ code {
 }
 
 .button:hover {
-  border-color: rgba(54, 80, 122, 0.9);
+  border-color: var(--glassHoverBorder);
+  background: var(--glassHoverBg);
   transform: translateY(-1px);
 }
 
 .button[aria-pressed="true"] {
-  border-color: rgba(199, 214, 255, 0.45);
-  background: rgba(18, 26, 44, 0.75);
+  border-color: var(--keepBorder);
+  background: var(--glassBgStrong2);
 }
 
 .button:focus-visible {
-  outline: 2px solid rgba(199, 214, 255, 0.55);
+  outline: 2px solid var(--focusRing);
   outline-offset: 2px;
 }
 
@@ -144,9 +429,9 @@ code {
 }
 
 .card {
-  border: 1px solid rgba(39, 48, 71, 0.95);
+  border: 1px solid var(--glassBorderStrong);
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(16, 21, 34, 0.92) 0%, rgba(14, 18, 32, 0.84) 100%);
+  background: linear-gradient(180deg, var(--cardGradTop) 0%, var(--cardGradBot) 100%);
   padding: 16px;
   overflow: hidden;
   box-shadow: var(--shadowSoft);
@@ -167,8 +452,8 @@ code {
   z-index: 0;
   opacity: 0.95;
   background:
-    radial-gradient(620px circle at var(--mx, 50%) var(--my, 20%), rgba(199, 214, 255, 0.16), transparent 55%),
-    radial-gradient(420px circle at calc(var(--mx, 50%) + 120px) calc(var(--my, 20%) + 140px), rgba(54, 80, 122, 0.15), transparent 60%);
+    radial-gradient(620px circle at var(--mx, 50%) var(--my, 20%), var(--spotA), transparent 55%),
+    radial-gradient(420px circle at calc(var(--mx, 50%) + 120px) calc(var(--my, 20%) + 140px), var(--spotB), transparent 60%);
 }
 
 .cardContent {
@@ -194,9 +479,9 @@ code {
   width: 56px;
   height: 38px;
   border-radius: 12px;
-  background: rgba(28, 38, 64, 0.85);
-  border: 1px solid rgba(43, 58, 99, 0.95);
-  color: #dbe7ff;
+  background: var(--glassBgPill2);
+  border: 1px solid var(--glassBorderStrong);
+  color: var(--accent0);
   font-weight: 600;
 }
 
@@ -220,8 +505,8 @@ code {
   width: 86px;
   height: 34px;
   border-radius: 999px;
-  border: 1px solid rgba(43, 58, 99, 0.95);
-  background: rgba(20, 28, 48, 0.7);
+  border: 1px solid var(--glassBorderStrong);
+  background: var(--glassBgPill2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -246,17 +531,17 @@ code {
 }
 
 .listItem {
-  border: 1px solid rgba(36, 48, 74, 0.95);
-  background: rgba(15, 20, 34, 0.7);
+  border: 1px solid var(--glassBorderStrong);
+  background: var(--glassBgStrong);
   border-radius: 12px;
   padding: 10px 12px;
-  color: #d3dae5;
+  color: var(--text2);
   transition: background 150ms ease, border-color 150ms ease;
 }
 
 .listItem:hover {
-  border-color: rgba(54, 80, 122, 0.8);
-  background: rgba(16, 22, 38, 0.78);
+  border-color: var(--glassHoverBorder);
+  background: var(--glassHoverBg);
 }
 
 .reorderItem {
@@ -282,9 +567,9 @@ code {
 
 .chipDetail {
   margin-top: 12px;
-  border: 1px solid rgba(39, 48, 71, 0.85);
+  border: 1px solid var(--glassBorderSoft);
   border-radius: 14px;
-  background: rgba(16, 21, 34, 0.78);
+  background: var(--glassBgStrong2);
   box-shadow: var(--shadow);
   overflow: hidden;
 }
@@ -312,14 +597,14 @@ code {
 
 .chipDetailHint {
   padding: 0 12px 12px;
-  color: rgba(174, 182, 194, 0.75);
+  color: var(--text1);
   font-size: 12px;
 }
 
 .iconButton {
   appearance: none;
-  border: 1px solid rgba(39, 48, 71, 0.9);
-  background: rgba(15, 20, 34, 0.65);
+  border: 1px solid var(--glassBorder);
+  background: var(--glassBg);
   color: var(--text0);
   border-radius: 10px;
   width: 34px;
@@ -330,18 +615,18 @@ code {
 }
 
 .iconButton:hover {
-  border-color: rgba(199, 214, 255, 0.35);
+  border-color: var(--keepBorder);
 }
 
 .iconButton:focus-visible {
-  outline: 2px solid rgba(199, 214, 255, 0.55);
+  outline: 2px solid var(--focusRing);
   outline-offset: 2px;
 }
 
 .side {
-  border: 1px solid rgba(39, 48, 71, 0.7);
+  border: 1px solid var(--glassBorderSoft);
   border-radius: 16px;
-  background: rgba(16, 21, 34, 0.55);
+  background: var(--glassBgSoft);
   backdrop-filter: blur(8px);
   padding: 14px;
   box-shadow: var(--shadowSoft);
@@ -357,7 +642,7 @@ code {
 
 .sideDivider {
   height: 1px;
-  background: rgba(39, 48, 71, 0.65);
+  background: var(--glassDivider);
   margin: 14px 0;
 }
 
@@ -376,7 +661,7 @@ code {
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  color: #d3dae5;
+  color: var(--text2);
   font-weight: 600;
 }
 
@@ -388,7 +673,7 @@ code {
 
 .range {
   width: 100%;
-  accent-color: rgba(199, 214, 255, 0.8);
+  accent-color: var(--rangeAccent);
 }
 
 .toggleRow {
@@ -401,7 +686,7 @@ code {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #d3dae5;
+  color: var(--text2);
   font-weight: 600;
   user-select: none;
 }
@@ -412,7 +697,7 @@ code {
 }
 
 .toggleText {
-  color: #d3dae5;
+  color: var(--text2);
 }
 
 .presenceSlot {
@@ -428,9 +713,9 @@ code {
 
 .deckCard {
   position: relative;
-  border: 1px solid rgba(39, 48, 71, 0.85);
+  border: 1px solid var(--glassBorderSoft);
   border-radius: 16px;
-  background: rgba(15, 20, 34, 0.55);
+  background: var(--glassBgSoft);
   overflow: hidden;
   box-shadow: var(--shadowSoft);
   min-height: 108px;
@@ -447,9 +732,9 @@ code {
   position: absolute;
   inset: -2px;
   background:
-    radial-gradient(520px circle at 30% 30%, rgba(199, 214, 255, 0.16), transparent 55%),
-    radial-gradient(420px circle at 80% 70%, rgba(54, 80, 122, 0.16), transparent 60%),
-    linear-gradient(180deg, rgba(16, 21, 34, 0.4), rgba(14, 18, 32, 0.65));
+    radial-gradient(520px circle at 30% 30%, var(--spotA), transparent 55%),
+    radial-gradient(420px circle at 80% 70%, var(--spotB), transparent 60%),
+    linear-gradient(180deg, var(--glassBgSoft), var(--glassBgStrong));
   pointer-events: none;
 }
 
@@ -469,18 +754,18 @@ code {
   font-weight: 800;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(39, 48, 71, 0.7);
-  background: rgba(11, 13, 16, 0.35);
+  border: 1px solid var(--glassBorderSoft);
+  background: var(--glassBgLabel);
   backdrop-filter: blur(6px);
 }
 
 .labelKeep {
-  color: rgba(199, 214, 255, 0.95);
-  border-color: rgba(199, 214, 255, 0.35);
+  color: var(--keepText);
+  border-color: var(--keepBorder);
 }
 
 .labelSkip {
-  color: rgba(174, 182, 194, 0.95);
+  color: var(--skipText);
 }
 
 .deckBody {
@@ -509,21 +794,21 @@ code {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(174, 182, 194, 0.35);
-  border: 1px solid rgba(39, 48, 71, 0.65);
+  background: var(--dotBg);
+  border: 1px solid var(--glassDivider);
 }
 
 .dotActive {
-  background: rgba(199, 214, 255, 0.8);
-  border-color: rgba(199, 214, 255, 0.45);
+  background: var(--keepText);
+  border-color: var(--keepBorder);
 }
 
 .presence {
-  border: 1px dashed rgba(54, 80, 122, 0.95);
+  border: 1px dashed var(--accentBorder);
   border-radius: 14px;
   padding: 14px 16px;
   color: var(--accent0);
-  background: rgba(19, 28, 48, 0.45);
+  background: var(--accentSurface);
 }
 
 .footer {
