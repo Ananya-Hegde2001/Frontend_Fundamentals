@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AnimatePresence,
   Reorder,
@@ -25,7 +25,38 @@ export default function App() {
   const [damping, setDamping] = useState(24);
   const [reduceMotion, setReduceMotion] = useState(false);
 
-  const [chips, setChips] = useState(() => ["Drag me", "Hover me", "Tap me"]);
+  const chipData = useMemo(
+    () => [
+      {
+        id: "drag",
+        label: "Drag me",
+        detail:
+          "Drag interactions are buttery with springs — try changing stiffness/damping in Motion Controls.",
+      },
+      {
+        id: "hover",
+        label: "Hover me",
+        detail:
+          "Hover states work best when they’re subtle: lift, glow, and micro-scale are usually enough.",
+      },
+      {
+        id: "tap",
+        label: "Tap me",
+        detail:
+          "Tap feedback should be instant. If it feels delayed, reduce damping or shorten durations.",
+      },
+    ],
+    []
+  );
+
+  const chipById = useMemo(() => {
+    const map = new Map();
+    for (const chip of chipData) map.set(chip.id, chip);
+    return map;
+  }, [chipData]);
+
+  const [chipOrder, setChipOrder] = useState(() => chipData.map((c) => c.id));
+  const [selectedChipId, setSelectedChipId] = useState(null);
 
   const deck = useMemo(
     () => [
@@ -72,6 +103,18 @@ export default function App() {
   const tiltYSpring = useSpring(tiltY, { stiffness: 240, damping: 26 });
 
   const activeDeckCard = deck[deckIndex % deck.length];
+
+  const selectedChip = selectedChipId ? chipById.get(selectedChipId) : null;
+
+  useEffect(() => {
+    if (!selectedChipId) return;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setSelectedChipId(null);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedChipId]);
 
   return (
     <div className="page">
@@ -201,26 +244,63 @@ export default function App() {
             <div className="sectionTitle">Reorder</div>
             <Reorder.Group
               axis="y"
-              values={chips}
-              onReorder={setChips}
+              values={chipOrder}
+              onReorder={setChipOrder}
               as="ul"
               className="list"
             >
-              {chips.map((label) => (
+              {chipOrder.map((id) => {
+                const chip = chipById.get(id);
+                if (!chip) return null;
+
+                return (
                 <Reorder.Item
-                  key={label}
-                  value={label}
+                  key={chip.id}
+                  value={chip.id}
                   as="li"
                   className="listItem reorderItem"
+                  layoutId={`chip-${chip.id}`}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.99 }}
                   transition={cardTransition}
+                  onClick={() => setSelectedChipId(chip.id)}
                 >
                   <span className="grip" aria-hidden="true" />
-                  <span className="chipText">{label}</span>
+                  <span className="chipText">{chip.label}</span>
                 </Reorder.Item>
-              ))}
+                );
+              })}
             </Reorder.Group>
+
+            <AnimatePresence>
+              {selectedChip ? (
+                <motion.div
+                  className="chipDetail"
+                  layoutId={`chip-${selectedChip.id}`}
+                  initial={motionOff ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={motionOff ? { opacity: 0 } : { opacity: 0, y: 10 }}
+                  transition={motionOff ? { duration: 0.01 } : cardTransition}
+                >
+                  <div className="chipDetailHeader">
+                    <div className="chipDetailTitle">{selectedChip.label}</div>
+                    <motion.button
+                      className="iconButton"
+                      type="button"
+                      aria-label="Close"
+                      onClick={() => setSelectedChipId(null)}
+                      whileHover={{ y: -1 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 520, damping: 32 }}
+                    >
+                      ×
+                    </motion.button>
+                  </div>
+                  <div className="chipDetailBody">{selectedChip.detail}</div>
+                  <div className="chipDetailHint">Press ESC to close</div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
           </div>
         </motion.section>
 
