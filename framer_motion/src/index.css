@@ -156,6 +156,7 @@ code {
 .cardSpotlight {
   position: relative;
   isolation: isolate;
+  transform-style: preserve-3d;
 }
 
 .cardSpotlight::before {
@@ -173,6 +174,7 @@ code {
 .cardContent {
   position: relative;
   z-index: 1;
+  transform: translateZ(0);
 }
 
 .cardExpanded {
@@ -390,6 +392,36 @@ code {
     radial-gradient(420px circle at 80% 70%, rgba(54, 80, 122, 0.16), transparent 60%),
     linear-gradient(180deg, rgba(16, 21, 34, 0.4), rgba(14, 18, 32, 0.65));
   pointer-events: none;
+}
+
+.deckLabels {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px;
+  pointer-events: none;
+}
+
+.labelPill {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(39, 48, 71, 0.7);
+  background: rgba(11, 13, 16, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.labelKeep {
+  color: rgba(199, 214, 255, 0.95);
+  border-color: rgba(199, 214, 255, 0.35);
+}
+
+.labelSkip {
+  color: rgba(174, 182, 194, 0.95);
 }
 
 .deckBody {
