@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   Reorder,
@@ -18,6 +18,26 @@ const ambientTransition = {
 
 export default function App() {
   const systemReducedMotion = useReducedMotion();
+
+  const [theme, setTheme] = useState(() => {
+    if (typeof document !== "undefined") {
+      const t = document.documentElement?.dataset?.theme;
+      if (t === "light" || t === "dark") return t;
+    }
+
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage?.getItem("theme");
+      if (stored === "light" || stored === "dark") return stored;
+      const prefersDark =
+        window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false;
+      return prefersDark ? "dark" : "light";
+    }
+
+    return "dark";
+  });
+
+  const labRef = useRef(null);
+  const deckRef = useRef(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -106,6 +126,25 @@ export default function App() {
 
   const selectedChip = selectedChipId ? chipById.get(selectedChipId) : null;
 
+  const scrollTo = (ref) => {
+    const node = ref?.current;
+    if (!node) return;
+    node.scrollIntoView({
+      behavior: motionOff ? "auto" : "smooth",
+      block: "start",
+    });
+  };
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.dataset.theme = theme;
+    try {
+      window.localStorage?.setItem("theme", theme);
+    } catch {
+      // ignore
+    }
+  }, [theme]);
+
   useEffect(() => {
     if (!selectedChipId) return;
     const onKeyDown = (e) => {
@@ -136,36 +175,138 @@ export default function App() {
       ) : null}
 
       <header className="header">
-        <h1 className="title">Motion Demo</h1>
-        <p className="subtitle">
-          A tiny playground using <code>motion/react</code>.
-        </p>
-      </header>
+        <div className="nav">
+          <div className="brand">
+            <span className="brandDot" aria-hidden="true" />
+            <span className="brandText">Motion Lab</span>
+          </div>
 
-      <div className="controls">
-        <motion.button
-          className="button"
-          type="button"
-          aria-pressed={isExpanded}
-          onClick={() => setIsExpanded((v) => !v)}
-          whileHover={{ y: -1 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        >
-          Toggle layout
-        </motion.button>
-        <motion.button
-          className="button"
-          type="button"
-          aria-pressed={isVisible}
-          onClick={() => setIsVisible((v) => !v)}
-          whileHover={{ y: -1 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        >
-          Toggle presence
-        </motion.button>
-      </div>
+          <div className="navPills">
+            <motion.button
+              className="pill"
+              type="button"
+              onClick={() => scrollTo(labRef)}
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 520, damping: 32 }}
+            >
+              Lab
+            </motion.button>
+            <motion.button
+              className="pill"
+              type="button"
+              onClick={() => scrollTo(deckRef)}
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 520, damping: 32 }}
+            >
+              Deck
+            </motion.button>
+
+            <motion.button
+              className="pill"
+              type="button"
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+              onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+              whileHover={{ y: -1 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 520, damping: 32 }}
+            >
+              {theme === "dark" ? "Dark" : "Light"}
+            </motion.button>
+          </div>
+        </div>
+
+        <div className="hero">
+          <motion.div
+            className="heroLeft"
+            initial={motionOff ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: motionOff ? 0.01 : 0.28, ease: "easeOut" }}
+          >
+            <h1 className="heroTitle">
+              Build <span className="heroGradient">ridiculous</span> UI motion
+            </h1>
+            <p className="heroSubtitle">
+              Spotlight + 3D tilt, reorder, swipe throws, and spring tuning — all in a
+              single page.
+            </p>
+
+            <div className="heroBullets">
+              <div className="bullet">Cursor spotlight + parallax tilt</div>
+              <div className="bullet">Reorder chips + shared-layout detail</div>
+              <div className="bullet">Swipe deck with velocity throws</div>
+            </div>
+
+            <div className="heroCtas">
+              <motion.button
+                className="cta ctaPrimary"
+                type="button"
+                onClick={() => scrollTo(labRef)}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 520, damping: 32 }}
+              >
+                Jump to Lab
+              </motion.button>
+              <motion.button
+                className="cta ctaSecondary"
+                type="button"
+                onClick={() => scrollTo(deckRef)}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 520, damping: 32 }}
+              >
+                Throw the Deck
+              </motion.button>
+            </div>
+
+            <div className="controls">
+              <motion.button
+                className="button"
+                type="button"
+                aria-pressed={isExpanded}
+                onClick={() => setIsExpanded((v) => !v)}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              >
+                Toggle layout
+              </motion.button>
+              <motion.button
+                className="button"
+                type="button"
+                aria-pressed={isVisible}
+                onClick={() => setIsVisible((v) => !v)}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              >
+                Toggle presence
+              </motion.button>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="heroRight"
+            initial={motionOff ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: motionOff ? 0.01 : 0.32, ease: "easeOut" }}
+          >
+            <div className="heroCard">
+              <div className="heroCardTop">
+                <div className="heroPill">Live springs</div>
+                <div className="heroPill">Drag + reorder</div>
+              </div>
+              <div className="heroCardTitle">Try moving your cursor</div>
+              <div className="heroCardSub">
+                The main card reacts with a spotlight + tilt.
+              </div>
+              <div className="heroCardHint">Scroll for the playground ↓</div>
+            </div>
+          </motion.div>
+        </div>
+      </header>
 
       <motion.main
         className="stage"
@@ -174,6 +315,7 @@ export default function App() {
         transition={{ duration: motionOff ? 0.01 : 0.24, ease: "easeOut" }}
       >
         <motion.section
+          ref={labRef}
           className={
             isExpanded
               ? "card cardExpanded cardSpotlight"
@@ -377,7 +519,7 @@ export default function App() {
           <div className="sideDivider" />
 
           <div className="sideTitle">Swipe Deck</div>
-          <div className="deck">
+          <div className="deck" ref={deckRef}>
             <AnimatePresence custom={deckDir} mode="popLayout">
               <DeckCard
                 key={activeDeckCard.id + deckIndex}
