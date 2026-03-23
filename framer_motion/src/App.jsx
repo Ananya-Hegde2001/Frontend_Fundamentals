@@ -16,6 +16,46 @@ const ambientTransition = {
   ease: "easeInOut",
 };
 
+const CONTROLS_STORAGE_KEY = "motion-lab.controls.v1";
+
+const DEFAULT_CONTROLS = Object.freeze({
+  stiffness: 260,
+  damping: 24,
+  reduceMotion: false,
+});
+
+function clampNumber(value, min, max, fallback) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  return Math.min(max, Math.max(min, num));
+}
+
+function loadControlsFromStorage() {
+  if (typeof window === "undefined") return DEFAULT_CONTROLS;
+  try {
+    const raw = window.localStorage?.getItem(CONTROLS_STORAGE_KEY);
+    if (!raw) return DEFAULT_CONTROLS;
+    const parsed = JSON.parse(raw);
+
+    return {
+      stiffness: clampNumber(parsed?.stiffness, 80, 520, DEFAULT_CONTROLS.stiffness),
+      damping: clampNumber(parsed?.damping, 8, 44, DEFAULT_CONTROLS.damping),
+      reduceMotion: Boolean(parsed?.reduceMotion),
+    };
+  } catch {
+    return DEFAULT_CONTROLS;
+  }
+}
+
+function persistControlsToStorage(controls) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage?.setItem(CONTROLS_STORAGE_KEY, JSON.stringify(controls));
+  } catch {
+    // ignore
+  }
+}
+
 export default function App() {
   const systemReducedMotion = useReducedMotion();
 
@@ -41,9 +81,9 @@ export default function App() {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [stiffness, setStiffness] = useState(260);
-  const [damping, setDamping] = useState(24);
-  const [reduceMotion, setReduceMotion] = useState(false);
+
+  const [controls, setControls] = useState(() => loadControlsFromStorage());
+  const { stiffness, damping, reduceMotion } = controls;
 
   const chipData = useMemo(
     () => [
@@ -144,6 +184,14 @@ export default function App() {
       // ignore
     }
   }, [theme]);
+
+  const lastSavedControls = useRef("");
+  useEffect(() => {
+    const serialized = JSON.stringify(controls);
+    if (serialized === lastSavedControls.current) return;
+    lastSavedControls.current = serialized;
+    persistControlsToStorage(controls);
+  }, [controls]);
 
   useEffect(() => {
     if (!selectedChipId) return;
@@ -463,7 +511,10 @@ export default function App() {
                 max={520}
                 step={10}
                 value={stiffness}
-                onChange={(e) => setStiffness(Number(e.target.value))}
+                onChange={(e) => {
+                  const next = clampNumber(e.target.value, 80, 520, DEFAULT_CONTROLS.stiffness);
+                  setControls((c) => ({ ...c, stiffness: next }));
+                }}
               />
             </div>
 
@@ -480,7 +531,10 @@ export default function App() {
                 max={44}
                 step={1}
                 value={damping}
-                onChange={(e) => setDamping(Number(e.target.value))}
+                onChange={(e) => {
+                  const next = clampNumber(e.target.value, 8, 44, DEFAULT_CONTROLS.damping);
+                  setControls((c) => ({ ...c, damping: next }));
+                }}
               />
             </div>
 
@@ -489,10 +543,25 @@ export default function App() {
                 <input
                   type="checkbox"
                   checked={reduceMotion}
-                  onChange={(e) => setReduceMotion(e.target.checked)}
+                  onChange={(e) =>
+                    setControls((c) => ({ ...c, reduceMotion: e.target.checked }))
+                  }
                 />
                 <span className="toggleText">Reduce motion</span>
               </label>
+            </div>
+
+            <div className="toggleRow">
+              <motion.button
+                className="button"
+                type="button"
+                onClick={() => setControls(DEFAULT_CONTROLS)}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              >
+                Reset controls
+              </motion.button>
             </div>
           </div>
 
