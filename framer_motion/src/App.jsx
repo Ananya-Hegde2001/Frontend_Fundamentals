@@ -5,6 +5,7 @@ import {
   motion,
   useMotionTemplate,
   useMotionValue,
+  useScroll,
   useTransform,
   useReducedMotion,
   useSpring,
@@ -117,6 +118,8 @@ export default function App() {
   const [controls, setControls] = useState(() => loadControlsFromStorage());
   const { stiffness, damping, reduceMotion } = controls;
 
+  const [modeState, setModeState] = useState(true);
+
   const chipData = useMemo(
     () => [
       {
@@ -187,6 +190,14 @@ export default function App() {
   const motionOff = Boolean(reduceMotion || systemReducedMotion);
   const ambientEnabled = !motionOff;
 
+  const { scrollYProgress } = useScroll();
+  const scrollProgressSpring = useSpring(scrollYProgress, {
+    stiffness: 320,
+    damping: 38,
+    restDelta: 0.001,
+  });
+  const scrollProgress = motionOff ? scrollYProgress : scrollProgressSpring;
+
   const spotlightX = useMotionValue(140);
   const spotlightY = useMotionValue(80);
   const spotlightXSpring = useSpring(spotlightX, { stiffness: 240, damping: 28 });
@@ -250,6 +261,11 @@ export default function App() {
 
   return (
     <div className="page">
+      <motion.div
+        className="scrollProgress"
+        aria-hidden="true"
+        style={{ scaleX: scrollProgress }}
+      />
       {ambientEnabled ? (
         <>
           <motion.div
@@ -667,9 +683,91 @@ export default function App() {
         </section>
       </motion.main>
 
+      <motion.section
+        className="card modesCard"
+        initial={motionOff ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: motionOff ? 0.01 : 0.22, ease: "easeOut" }}
+      >
+        <div className="cardContent">
+          <div className="cardTop">
+            <div className="badge">Modes</div>
+            <div className="cardText">
+              <h2 className="cardTitle">AnimatePresence modes</h2>
+              <p className="cardSubtitle">Compare sync / wait / popLayout behavior.</p>
+            </div>
+          </div>
+
+          <div className="modesContainer">
+            <ModeExample
+              mode="sync"
+              Icon={SyncIcon}
+              state={modeState}
+              motionOff={motionOff}
+            />
+            <ModeExample
+              mode="wait"
+              Icon={WaitIcon}
+              state={modeState}
+              motionOff={motionOff}
+            />
+            <ModeExample
+              mode="popLayout"
+              Icon={PopLayoutIcon}
+              state={modeState}
+              motionOff={motionOff}
+            />
+          </div>
+
+          <div className="modesActions">
+            <motion.button
+              className="button"
+              type="button"
+              onClick={() => setModeState((v) => !v)}
+              whileTap={motionOff ? undefined : { scale: 0.95 }}
+            >
+              Switch
+            </motion.button>
+          </div>
+        </div>
+      </motion.section>
+
       <footer className="footer">
         Tip: move your cursor over the card, reorder chips, and throw the deck.
       </footer>
+    </div>
+  );
+}
+
+function ModeExample({ mode, Icon, state, motionOff }) {
+  const defaultEase = [0.26, 0.02, 0.23, 0.94];
+  const inEase = mode === "wait" ? [0.02, 0.35, 0.25, 0.99] : defaultEase;
+  const outEase = mode === "wait" ? [0.46, 0.04, 0.97, 0.44] : defaultEase;
+
+  return (
+    <div className="modeSection">
+      <div className="iconContainer">
+        <AnimatePresence mode={mode}>
+          <motion.div
+            key={String(state)}
+            className={state ? "baseCircle active" : "baseCircle inactive"}
+            initial={motionOff ? false : { opacity: 0, scale: 0.6 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              transition: motionOff ? { duration: 0.01 } : { duration: 0.3, ease: inEase },
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.8,
+              transition: motionOff ? { duration: 0.01 } : { duration: 0.3, ease: outEase },
+            }}
+          >
+            <Icon />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <code className="modeTitle">{mode}</code>
     </div>
   );
 }
@@ -743,5 +841,68 @@ function DeckCard({ card, dir, motionOff, transition, onThrow }) {
         <div className="deckSub">{card.subtitle}</div>
       </div>
     </motion.div>
+  );
+}
+
+function SyncIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+      <path d="M16 16h5v5" />
+    </svg>
+  );
+}
+
+function WaitIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2v4" />
+      <path d="m16.2 7.8 2.9-2.9" />
+      <path d="M18 12h4" />
+      <path d="m16.2 16.2 2.9 2.9" />
+      <path d="M12 18v4" />
+      <path d="m4.9 19.1 2.9-2.9" />
+      <path d="M2 12h4" />
+      <path d="m4.9 4.9 2.9 2.9" />
+    </svg>
+  );
+}
+
+function PopLayoutIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6" />
+      <path d="m21 3-9 9" />
+      <path d="M15 3h6v6" />
+    </svg>
   );
 }
