@@ -26,6 +26,10 @@ const DEFAULT_CONTROLS = Object.freeze({
   reduceMotion: false,
 });
 
+function useParallax(value, distance) {
+  return useTransform(value, [0, 1], [-distance, distance]);
+}
+
 function clampNumber(value, min, max, fallback) {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
@@ -197,6 +201,17 @@ export default function App() {
     restDelta: 0.001,
   });
   const scrollProgress = motionOff ? scrollYProgress : scrollProgressSpring;
+
+  const parallaxContainerRef = useRef(null);
+  const { scrollYProgress: galleryScrollYProgress } = useScroll({
+    container: parallaxContainerRef,
+  });
+  const galleryProgressSpring = useSpring(galleryScrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  const galleryProgress = motionOff ? galleryScrollYProgress : galleryProgressSpring;
 
   const spotlightX = useMotionValue(140);
   const spotlightY = useMotionValue(80);
@@ -732,10 +747,76 @@ export default function App() {
         </div>
       </motion.section>
 
+      <motion.section
+        className="card parallaxCard"
+        initial={motionOff ? false : { opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: motionOff ? 0.01 : 0.22, ease: "easeOut" }}
+      >
+        <div className="cardContent">
+          <div className="cardTop">
+            <div className="badge">Scroll</div>
+            <div className="cardText">
+              <h2 className="cardTitle">Parallax gallery</h2>
+              <p className="cardSubtitle">
+                Snap-scroll through panels — labels parallax based on scroll progress.
+              </p>
+            </div>
+          </div>
+
+          <div className="parallaxViewport" ref={parallaxContainerRef}>
+            {[1, 2, 3, 4, 5].map((id) => (
+              <ParallaxPanel
+                key={id}
+                id={id}
+                containerRef={parallaxContainerRef}
+                motionOff={motionOff}
+              />
+            ))}
+
+            <motion.div
+              className="parallaxProgress"
+              aria-hidden="true"
+              style={{ scaleX: galleryProgress }}
+            />
+          </div>
+        </div>
+      </motion.section>
+
       <footer className="footer">
         Tip: move your cursor over the card, reorder chips, and throw the deck.
       </footer>
     </div>
+  );
+}
+
+function ParallaxPanel({ id, containerRef, motionOff }) {
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    container: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useParallax(scrollYProgress, 180);
+  const labelY = motionOff ? 0 : y;
+
+  return (
+    <section className="parallaxPanel" ref={targetRef} aria-label={`Panel ${id}`}
+    >
+      <div className="parallaxFrame" data-id={id}>
+        <div className="parallaxFrameInner" aria-hidden="true" />
+      </div>
+      <motion.h2
+        className="parallaxLabel"
+        initial={motionOff ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: motionOff ? 0.01 : 0.2 }}
+        style={{ y: labelY }}
+      >
+        {`#00${id}`}
+      </motion.h2>
+    </section>
   );
 }
 
