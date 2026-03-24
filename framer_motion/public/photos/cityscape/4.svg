@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+  <defs>
+    <linearGradient id="sky" x1="1" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#101522"/>
+      <stop offset="0.55" stop-color="#0e1220"/>
+      <stop offset="1" stop-color="#0b0d10"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="60%" cy="18%" r="70%">
+      <stop offset="0" stop-color="#c7d6ff" stop-opacity="0.16"/>
+      <stop offset="0.7" stop-color="#36507a" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="build" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#1c2a4a" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#0b0d10" stop-opacity="0.98"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="800" fill="url(#sky)"/>
+  <rect width="600" height="800" fill="url(#glow)"/>
+
+  <g fill="url(#build)">
+    <path d="M0 600h70V470h55v130h40V430h55v170h45V510h45v90h45V450h70v150h35V420h60v180h80V800H0z"/>
+    <path d="M0 670h120V560h45v110h55V540h40v130h65V585h50v85h55V530h60v140h110V800H0z" opacity="0.92"/>
+  </g>
+
+  <g fill="#c7d6ff" opacity="0.10">
+    <rect x="94" y="520" width="8" height="10"/>
+    <rect x="116" y="548" width="8" height="10"/>
+    <rect x="222" y="468" width="8" height="10"/>
+    <rect x="244" y="496" width="8" height="10"/>
+    <rect x="350" y="524" width="8" height="10"/>
+    <rect x="372" y="552" width="8" height="10"/>
+    <rect x="470" y="470" width="8" height="10"/>
+    <rect x="492" y="498" width="8" height="10"/>
+  </g>
+</svg>
