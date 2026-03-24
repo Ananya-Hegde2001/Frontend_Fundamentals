@@ -481,6 +481,105 @@ code {
   margin-top: 14px;
 }
 
+.parallaxCard {
+  margin-top: 14px;
+}
+
+.parallaxViewport {
+  margin-top: 14px;
+  height: min(70vh, 560px);
+  min-height: 420px;
+  border-radius: 16px;
+  border: 1px solid var(--glassBorderSoft);
+  background: var(--glassBgSoft);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  position: relative;
+}
+
+.parallaxPanel {
+  height: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.parallaxFrame {
+  width: 320px;
+  height: 420px;
+  margin: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--glassBorderStrong);
+  background: linear-gradient(180deg, var(--cardGradTop), var(--cardGradBot));
+  overflow: hidden;
+  box-shadow: var(--shadowSoft);
+  position: relative;
+}
+
+.parallaxFrameInner {
+  position: absolute;
+  inset: -40px;
+  background:
+    radial-gradient(700px circle at 20% 0%, var(--spotA), transparent 55%),
+    radial-gradient(540px circle at 90% 80%, var(--spotB), transparent 60%),
+    linear-gradient(180deg, var(--glassBgStrong2), var(--glassBgSoft));
+  transform: rotate(-4deg);
+}
+
+.parallaxImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 0.94;
+  pointer-events: none;
+  user-select: none;
+}
+
+.parallaxLabel {
+  margin: 0;
+  font-size: 46px;
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  position: absolute;
+  top: calc(50% - 23px);
+  left: calc(50% + 110px);
+  color: var(--keepText);
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.parallaxProgress {
+  position: sticky;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--primaryBtnBg);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+  margin: 0 14px 12px;
+}
+
+@media (max-width: 520px) {
+  .parallaxFrame {
+    width: 180px;
+    height: 240px;
+  }
+
+  .parallaxLabel {
+    font-size: 34px;
+    top: calc(50% - 17px);
+    left: calc(50% + 74px);
+  }
+}
+
 .modesContainer {
   display: flex;
   gap: 22px;
