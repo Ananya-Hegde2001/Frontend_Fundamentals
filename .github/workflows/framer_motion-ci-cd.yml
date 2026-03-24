@@ -1,0 +1,60 @@
+name: framer_motion CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "framer_motion/**"
+      - ".github/workflows/framer_motion-ci-cd.yml"
+  pull_request:
+    paths:
+      - "framer_motion/**"
+      - ".github/workflows/framer_motion-ci-cd.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (framer_motion)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: framer_motion
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: framer_motion/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: framer_motion-dist
+          path: framer_motion/dist
+          if-no-files-found: error
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./framer_motion
+          file: ./framer_motion/Dockerfile
+          push: false
+          tags: framer-motion-demo:ci
