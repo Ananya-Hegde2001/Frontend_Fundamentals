@@ -539,6 +539,11 @@ code {
   transition: background 150ms ease, border-color 150ms ease;
 }
 
+.listItem:focus-visible {
+  outline: 2px solid var(--focusRing);
+  outline-offset: 2px;
+}
+
 .listItem:hover {
   border-color: var(--glassHoverBorder);
   background: var(--glassHoverBg);
@@ -726,6 +731,11 @@ code {
 
 .deckCard:active {
   cursor: grabbing;
+}
+
+.deckCard:focus-visible {
+  outline: 2px solid var(--focusRing);
+  outline-offset: 3px;
 }
 
 .deckGlow {
