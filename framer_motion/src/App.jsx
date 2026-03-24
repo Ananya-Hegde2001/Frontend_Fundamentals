@@ -806,6 +806,14 @@ function ParallaxPanel({ id, containerRef, motionOff }) {
     >
       <div className="parallaxFrame" data-id={id}>
         <div className="parallaxFrameInner" aria-hidden="true" />
+        <img
+          className="parallaxImage"
+          src={`/photos/cityscape/${id}.svg`}
+          alt={`Cityscape ${id}`}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+        />
       </div>
       <motion.h2
         className="parallaxLabel"
