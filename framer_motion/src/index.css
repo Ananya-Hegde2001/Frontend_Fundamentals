@@ -147,6 +147,17 @@ code {
   position: relative;
 }
 
+.scrollProgress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform-origin: 0% 50%;
+  background: var(--primaryBtnBg);
+  z-index: 10;
+}
+
 .bgBlob {
   position: absolute;
   inset: auto;
@@ -464,6 +475,77 @@ code {
 
 .cardExpanded {
   padding: 22px;
+}
+
+.modesCard {
+  margin-top: 14px;
+}
+
+.modesContainer {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.modesActions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.modeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconContainer {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modeTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text1);
+  opacity: 0.95;
+}
+
+.baseCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  will-change: transform;
+}
+
+.baseCircle.active {
+  background: var(--primaryBtnBg);
+  color: var(--primaryBtnText);
+  border: 1px solid var(--glassBorderStrong);
+}
+
+.baseCircle.inactive {
+  background: transparent;
+  color: var(--text0);
+  border: 1px solid var(--glassBorderStrong);
+}
+
+.baseCircle svg {
+  width: 24px;
+  height: 24px;
 }
 
 .cardTop {
