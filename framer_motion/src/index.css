@@ -147,6 +147,16 @@ code {
   position: relative;
 }
 
+.pageTransition {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: radial-gradient(1200px 800px at 20% -10%, var(--glowA), transparent 60%),
+    radial-gradient(1000px 700px at 110% 20%, var(--glowB), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  backdrop-filter: blur(10px);
+}
+
 .scrollProgress {
   position: fixed;
   top: 0;
