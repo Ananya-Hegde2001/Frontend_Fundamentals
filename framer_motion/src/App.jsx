@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   MotionConfig,
   Reorder,
   motion,
+  useAnimationControls,
   useMotionTemplate,
   useMotionValue,
   useScroll,
@@ -50,6 +51,23 @@ const heroItemVariants = {
     opacity: 1,
     y: 0,
     transition: { duration: 0.22, ease: "easeOut" },
+  },
+};
+
+const navTransitionVariants = {
+  initial: {
+    opacity: 0,
+    pointerEvents: "none",
+  },
+  cover: {
+    opacity: 1,
+    pointerEvents: "auto",
+    transition: { duration: 0.18, ease: "easeOut" },
+  },
+  uncover: {
+    opacity: 0,
+    pointerEvents: "none",
+    transition: { duration: 0.22, ease: "easeIn" },
   },
 };
 
@@ -221,6 +239,9 @@ export default function App() {
   const motionOff = Boolean(reduceMotion || systemReducedMotion);
   const ambientEnabled = !motionOff;
 
+  const [navTarget, setNavTarget] = useState(null);
+  const navTransition = useAnimationControls();
+
   const { scrollYProgress } = useScroll();
   const scrollProgressSpring = useSpring(scrollYProgress, {
     stiffness: 320,
@@ -256,14 +277,43 @@ export default function App() {
 
   const selectedChip = selectedChipId ? chipById.get(selectedChipId) : null;
 
-  const scrollTo = (ref) => {
+  const scrollTo = useCallback(
+    (ref) => {
     const node = ref?.current;
     if (!node) return;
     node.scrollIntoView({
       behavior: motionOff ? "auto" : "smooth",
       block: "start",
     });
-  };
+    },
+    [motionOff]
+  );
+
+  useEffect(() => {
+    if (!navTarget) return;
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        navTransition.set("initial");
+        await navTransition.start("cover");
+        if (cancelled) return;
+
+        scrollTo(navTarget === "lab" ? labRef : deckRef);
+
+        await navTransition.start("uncover");
+        if (cancelled) return;
+        setNavTarget(null);
+      } catch {
+        setNavTarget(null);
+      }
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [navTarget, navTransition, scrollTo]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -307,6 +357,20 @@ export default function App() {
       transition={cardTransition}
     >
       <div className="page">
+        <AnimatePresence>
+          {navTarget ? (
+            <motion.div
+              key="navTransition"
+              className="pageTransition"
+              variants={navTransitionVariants}
+              initial="initial"
+              animate={navTransition}
+              exit="initial"
+              aria-hidden="true"
+            />
+          ) : null}
+        </AnimatePresence>
+
         <motion.div
           className="scrollProgress"
           aria-hidden="true"
@@ -340,7 +404,13 @@ export default function App() {
               <motion.button
                 className="pill"
                 type="button"
-                onClick={() => scrollTo(labRef)}
+                onClick={() => {
+                  if (motionOff) {
+                    scrollTo(labRef);
+                    return;
+                  }
+                  setNavTarget("lab");
+                }}
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 520, damping: 32 }}
@@ -350,7 +420,13 @@ export default function App() {
               <motion.button
                 className="pill"
                 type="button"
-                onClick={() => scrollTo(deckRef)}
+                onClick={() => {
+                  if (motionOff) {
+                    scrollTo(deckRef);
+                    return;
+                  }
+                  setNavTarget("deck");
+                }}
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 520, damping: 32 }}
