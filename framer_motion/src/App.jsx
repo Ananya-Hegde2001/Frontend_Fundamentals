@@ -890,6 +890,8 @@ export default function App() {
         </div>
       </motion.section>
 
+      <WarpTunnelCard motionOff={motionOff} stiffness={stiffness} damping={damping} />
+
       <footer className="footer">Tip: move your cursor over the card, reorder chips, and throw the deck.</footer>
       </div>
     </MotionConfig>
@@ -931,6 +933,194 @@ function ParallaxPanel({ id, containerRef, motionOff }) {
         {`#00${id}`}
       </motion.h2>
     </section>
+  );
+}
+
+function WarpTunnelCard({ motionOff, stiffness, damping }) {
+  const sectionRef = useRef(null);
+  const viewportRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const progressSpring = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  const progress = motionOff ? scrollYProgress : progressSpring;
+
+  const tunnelScale = useTransform(progress, [0, 1], [0.94, 1.08]);
+  const tunnelRotate = useTransform(progress, [0, 1], [-10, 10]);
+  const tunnelY = useTransform(progress, [0, 1], [36, -28]);
+  const backdropOpacity = useTransform(progress, [0, 1], [0.6, 0.95]);
+
+  const cursorX = useMotionValue(260);
+  const cursorY = useMotionValue(150);
+
+  const baseStiffness = Math.min(420, Math.max(120, stiffness));
+  const baseDamping = Math.min(42, Math.max(16, damping));
+
+  const headX = useSpring(cursorX, { stiffness: baseStiffness, damping: baseDamping });
+  const headY = useSpring(cursorY, { stiffness: baseStiffness, damping: baseDamping });
+
+  const midX = useSpring(cursorX, {
+    stiffness: baseStiffness * 0.65,
+    damping: baseDamping * 1.15,
+  });
+  const midY = useSpring(cursorY, {
+    stiffness: baseStiffness * 0.65,
+    damping: baseDamping * 1.15,
+  });
+
+  const tailX = useSpring(cursorX, {
+    stiffness: baseStiffness * 0.42,
+    damping: baseDamping * 1.25,
+  });
+  const tailY = useSpring(cursorY, {
+    stiffness: baseStiffness * 0.42,
+    damping: baseDamping * 1.25,
+  });
+
+  const spotlightX = useMotionTemplate`${headX}px`;
+  const spotlightY = useMotionTemplate`${headY}px`;
+
+  const spotlightBg = useMotionTemplate`
+    radial-gradient(900px 520px at ${spotlightX} ${spotlightY}, var(--spotA), transparent 60%),
+    radial-gradient(740px 480px at calc(${spotlightX} + 140px) calc(${spotlightY} + 90px), var(--spotB), transparent 62%),
+    linear-gradient(180deg, var(--cardGradTop), var(--cardGradBot))
+  `;
+
+  const syncPointer = useCallback(
+    (clientX, clientY) => {
+      const node = viewportRef.current;
+      if (!node) return;
+
+      const rect = node.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      cursorX.set(x);
+      cursorY.set(y);
+    },
+    [cursorX, cursorY]
+  );
+
+  const resetPointer = useCallback(() => {
+    const node = viewportRef.current;
+    if (!node) return;
+
+    const rect = node.getBoundingClientRect();
+    cursorX.set(rect.width * 0.5);
+    cursorY.set(rect.height * 0.45);
+  }, [cursorX, cursorY]);
+
+  return (
+    <motion.section
+      ref={sectionRef}
+      className="card warpCard"
+      initial={motionOff ? false : { opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VIEWPORT_ONCE}
+      transition={{ duration: motionOff ? 0.01 : 0.22, ease: "easeOut" }}
+    >
+      <div className="cardContent">
+        <div className="cardTop">
+          <div className="badge">Warp</div>
+          <div className="cardText">
+            <h2 className="cardTitle">Warp tunnel</h2>
+            <p className="cardSubtitle">
+              Scroll-linked 3D transforms + a cursor spring trail (tuned by your controls).
+            </p>
+          </div>
+        </div>
+
+        <div
+          className="warpViewport"
+          ref={viewportRef}
+          onPointerMove={(e) => {
+            if (motionOff) return;
+            syncPointer(e.clientX, e.clientY);
+          }}
+          onPointerDown={(e) => {
+            if (motionOff) return;
+            syncPointer(e.clientX, e.clientY);
+          }}
+          onPointerLeave={() => {
+            if (motionOff) return;
+            resetPointer();
+          }}
+        >
+          <motion.div
+            className="warpBackdrop"
+            aria-hidden="true"
+            style={{ opacity: backdropOpacity, background: spotlightBg }}
+          />
+
+          <motion.div
+            className="warpTunnel"
+            aria-hidden="true"
+            style={{ y: tunnelY, rotate: tunnelRotate, scale: tunnelScale }}
+          >
+            <div className="warpGrid" />
+
+            <motion.div
+              className="warpRing warpRingOuter"
+              animate={
+                motionOff
+                  ? undefined
+                  : { rotate: [0, 360], scale: [1, 1.05, 1], opacity: [0.55, 0.75, 0.55] }
+              }
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              className="warpRing warpRingMid"
+              animate={motionOff ? undefined : { rotate: [360, 0], scale: [1, 0.96, 1] }}
+              transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              className="warpRing warpRingInner"
+              animate={motionOff ? undefined : { rotate: [0, 360] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
+            />
+
+            <div className="warpVignette" />
+          </motion.div>
+
+          <motion.div
+            className="warpCursorDot warpCursorDotA"
+            aria-hidden="true"
+            style={{ x: headX, y: headY, opacity: motionOff ? 0 : 1 }}
+          >
+            <div className="warpCursorDotInner" />
+          </motion.div>
+          <motion.div
+            className="warpCursorDot warpCursorDotB"
+            aria-hidden="true"
+            style={{ x: midX, y: midY, opacity: motionOff ? 0 : 1 }}
+          >
+            <div className="warpCursorDotInner" />
+          </motion.div>
+          <motion.div
+            className="warpCursorDot warpCursorDotC"
+            aria-hidden="true"
+            style={{ x: tailX, y: tailY, opacity: motionOff ? 0 : 1 }}
+          >
+            <div className="warpCursorDotInner" />
+          </motion.div>
+
+          <div className="warpCaption" aria-hidden="true">
+            <div className="warpCaptionLeft">
+              <div className="warpCaptionTitle">Scroll → warp</div>
+              <div className="warpCaptionSub">Move cursor → spring trail</div>
+            </div>
+            <div className="warpCaptionRight">stiffness {stiffness} · damping {damping}</div>
+          </div>
+        </div>
+      </div>
+    </motion.section>
   );
 }
 
