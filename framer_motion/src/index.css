@@ -495,6 +495,151 @@ code {
   margin-top: 14px;
 }
 
+.warpCard {
+  margin-top: 14px;
+}
+
+.warpViewport {
+  margin-top: 14px;
+  height: min(52vh, 360px);
+  min-height: 260px;
+  border-radius: 16px;
+  border: 1px solid var(--glassBorderSoft);
+  background: var(--glassBgSoft);
+  overflow: hidden;
+  position: relative;
+  touch-action: none;
+}
+
+.warpBackdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.warpTunnel {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.warpGrid {
+  position: absolute;
+  inset: -1px;
+  opacity: 0.28;
+  background:
+    linear-gradient(90deg, transparent, var(--glassDivider), transparent),
+    linear-gradient(0deg, transparent, var(--glassDivider), transparent);
+  background-size: 92px 1px, 1px 72px;
+  background-position: center;
+  filter: blur(0.2px);
+}
+
+.warpRing {
+  position: absolute;
+  border-radius: 999px;
+  border: 1px solid var(--glassBorderSoft);
+  background:
+    radial-gradient(520px circle at 30% 20%, var(--spotA), transparent 55%),
+    radial-gradient(420px circle at 80% 70%, var(--spotB), transparent 60%),
+    linear-gradient(180deg, var(--glassBgSoft), var(--glassBgStrong));
+  box-shadow: var(--shadowSoft);
+}
+
+.warpRingOuter {
+  width: 360px;
+  height: 360px;
+  opacity: 0.65;
+}
+
+.warpRingMid {
+  width: 260px;
+  height: 260px;
+  opacity: 0.72;
+}
+
+.warpRingInner {
+  width: 160px;
+  height: 160px;
+  opacity: 0.82;
+}
+
+.warpVignette {
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(520px circle at 50% 45%, transparent 20%, var(--bg0) 100%);
+  opacity: 0.28;
+}
+
+.warpCursorDot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.warpCursorDotInner {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--glassBorderStrong);
+  background: var(--glassBgPill2);
+  box-shadow: var(--shadowSoft);
+  transform: translate(-50%, -50%);
+}
+
+.warpCursorDotB .warpCursorDotInner {
+  width: 16px;
+  height: 16px;
+  opacity: 0.85;
+}
+
+.warpCursorDotC .warpCursorDotInner {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+}
+
+.warpCaption {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--glassBorderSoft);
+  background: var(--glassBg);
+  backdrop-filter: blur(8px);
+  z-index: 3;
+}
+
+.warpCaptionTitle {
+  font-weight: 850;
+  letter-spacing: -0.01em;
+}
+
+.warpCaptionSub {
+  margin-top: 4px;
+  color: var(--text1);
+  font-size: 12px;
+}
+
+.warpCaptionRight {
+  color: var(--text1);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
 .parallaxViewport {
   margin-top: 14px;
   height: min(70vh, 560px);
@@ -1022,6 +1167,10 @@ code {
 
 @media (prefers-reduced-motion: reduce) {
   .bgBlob {
+    display: none;
+  }
+
+  .warpCursorDot {
     display: none;
   }
 
