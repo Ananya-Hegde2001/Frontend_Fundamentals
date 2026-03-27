@@ -167,6 +167,9 @@ export default function App() {
   const [controls, setControls] = useState(() => loadControlsFromStorage());
   const { stiffness, damping, reduceMotion } = controls;
 
+  const motionOff = Boolean(reduceMotion || systemReducedMotion);
+  const ambientEnabled = !motionOff;
+
   const [modeState, setModeState] = useState(true);
 
   const toastIdRef = useRef(1);
@@ -201,7 +204,7 @@ export default function App() {
 
   const resumeToast = useCallback(
     (id) => {
-      if (motionOff) return;
+      if (reduceMotion || systemReducedMotion) return;
 
       setToasts((prev) => {
         const next = prev.map((t) => (t.id === id ? { ...t, startedAt: performance.now() } : t));
@@ -226,13 +229,13 @@ export default function App() {
         return next;
       });
     },
-    [motionOff, removeToast]
+    [reduceMotion, systemReducedMotion, removeToast]
   );
 
   const addToast = useCallback(
     (variant = "info") => {
       const id = `t${toastIdRef.current++}`;
-      const ttlMs = motionOff ? 0 : 4200;
+      const ttlMs = reduceMotion || systemReducedMotion ? 0 : 4200;
 
       const contentByVariant = {
         info: {
@@ -268,7 +271,7 @@ export default function App() {
         toastTimersRef.current.set(id, timer);
       }
     },
-    [motionOff, removeToast]
+    [reduceMotion, systemReducedMotion, removeToast]
   );
 
   const chipData = useMemo(
@@ -337,9 +340,6 @@ export default function App() {
     () => ({ type: "spring", stiffness, damping }),
     [stiffness, damping]
   );
-
-  const motionOff = Boolean(reduceMotion || systemReducedMotion);
-  const ambientEnabled = !motionOff;
 
   const [navTarget, setNavTarget] = useState(null);
   const navTransition = useAnimationControls();
