@@ -169,6 +169,108 @@ export default function App() {
 
   const [modeState, setModeState] = useState(true);
 
+  const toastIdRef = useRef(1);
+  const [toasts, setToasts] = useState([]);
+  const toastTimersRef = useRef(new Map());
+
+  const removeToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+    const timers = toastTimersRef.current;
+    const timer = timers.get(id);
+    if (timer) {
+      window.clearTimeout(timer);
+      timers.delete(id);
+    }
+  }, []);
+
+  const pauseToast = useCallback((id) => {
+    const timers = toastTimersRef.current;
+    const timer = timers.get(id);
+    if (timer) {
+      window.clearTimeout(timer);
+      timers.delete(id);
+    }
+    setToasts((prev) =>
+      prev.map((t) => {
+        if (t.id !== id) return t;
+        const elapsed = performance.now() - t.startedAt;
+        return { ...t, remainingMs: Math.max(0, t.remainingMs - elapsed), startedAt: performance.now() };
+      })
+    );
+  }, []);
+
+  const resumeToast = useCallback(
+    (id) => {
+      if (motionOff) return;
+
+      setToasts((prev) => {
+        const next = prev.map((t) => (t.id === id ? { ...t, startedAt: performance.now() } : t));
+        const toast = next.find((t) => t.id === id);
+        if (!toast) return next;
+
+        const remaining = toast.remainingMs;
+        if (remaining <= 0) {
+          queueMicrotask(() => removeToast(id));
+          return next;
+        }
+
+        const timers = toastTimersRef.current;
+        const existing = timers.get(id);
+        if (existing) {
+          window.clearTimeout(existing);
+          timers.delete(id);
+        }
+
+        const timer = window.setTimeout(() => removeToast(id), remaining);
+        timers.set(id, timer);
+        return next;
+      });
+    },
+    [motionOff, removeToast]
+  );
+
+  const addToast = useCallback(
+    (variant = "info") => {
+      const id = `t${toastIdRef.current++}`;
+      const ttlMs = motionOff ? 0 : 4200;
+
+      const contentByVariant = {
+        info: {
+          title: "Saved",
+          message: "Springs updated and stored locally.",
+        },
+        success: {
+          title: "Nice throw",
+          message: "That swipe had some serious velocity.",
+        },
+        warning: {
+          title: "Heads up",
+          message: "Try lowering damping for snappier motion.",
+        },
+      };
+
+      const payload = contentByVariant[variant] ?? contentByVariant.info;
+
+      const toast = {
+        id,
+        variant,
+        title: payload.title,
+        message: payload.message,
+        createdAt: Date.now(),
+        startedAt: performance.now(),
+        remainingMs: ttlMs,
+      };
+
+      setToasts((prev) => [toast, ...prev].slice(0, 4));
+
+      if (ttlMs > 0) {
+        const timer = window.setTimeout(() => removeToast(id), ttlMs);
+        toastTimersRef.current.set(id, timer);
+      }
+    },
+    [motionOff, removeToast]
+  );
+
   const chipData = useMemo(
     () => [
       {
@@ -357,6 +459,14 @@ export default function App() {
       transition={cardTransition}
     >
       <div className="page">
+        <ToastStack
+          toasts={toasts}
+          onClose={removeToast}
+          onPause={pauseToast}
+          onResume={resumeToast}
+          motionOff={motionOff}
+          transition={cardTransition}
+        />
         <AnimatePresence>
           {navTarget ? (
             <motion.div
@@ -892,9 +1002,149 @@ export default function App() {
 
       <WarpTunnelCard motionOff={motionOff} stiffness={stiffness} damping={damping} />
 
+      <motion.section
+        className="card toastCard"
+        initial={motionOff ? false : { opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={VIEWPORT_ONCE}
+        transition={{ duration: motionOff ? 0.01 : 0.22, ease: "easeOut" }}
+      >
+        <div className="cardContent">
+          <div className="cardTop">
+            <div className="badge">Toasts</div>
+            <div className="cardText">
+              <h2 className="cardTitle">Toast stack</h2>
+              <p className="cardSubtitle">
+                Shared-layout notifications with swipe-to-dismiss (pause on hover).
+              </p>
+            </div>
+          </div>
+
+          <div className="toastActions">
+            <motion.button
+              className="button"
+              type="button"
+              onClick={() => addToast("info")}
+              whileTap={motionOff ? undefined : { scale: 0.97 }}
+            >
+              Add info
+            </motion.button>
+            <motion.button
+              className="button"
+              type="button"
+              onClick={() => addToast("success")}
+              whileTap={motionOff ? undefined : { scale: 0.97 }}
+            >
+              Add success
+            </motion.button>
+            <motion.button
+              className="button"
+              type="button"
+              onClick={() => addToast("warning")}
+              whileTap={motionOff ? undefined : { scale: 0.97 }}
+            >
+              Add warning
+            </motion.button>
+            <motion.button
+              className="button"
+              type="button"
+              onClick={() => {
+                setToasts([]);
+                for (const timer of toastTimersRef.current.values()) {
+                  window.clearTimeout(timer);
+                }
+                toastTimersRef.current.clear();
+              }}
+              whileTap={motionOff ? undefined : { scale: 0.97 }}
+            >
+              Clear
+            </motion.button>
+          </div>
+
+          <div className="toastHint">
+            Tip: hover a toast to pause · swipe right to dismiss
+          </div>
+        </div>
+      </motion.section>
+
       <footer className="footer">Tip: move your cursor over the card, reorder chips, and throw the deck.</footer>
       </div>
     </MotionConfig>
+  );
+}
+
+function ToastStack({ toasts, onClose, onPause, onResume, motionOff, transition }) {
+  return (
+    <div className="toastStack" role="region" aria-label="Notifications">
+      <AnimatePresence initial={false} mode="popLayout">
+        {toasts.map((toast) => (
+          <ToastItem
+            key={toast.id}
+            toast={toast}
+            onClose={onClose}
+            onPause={onPause}
+            onResume={onResume}
+            motionOff={motionOff}
+            transition={transition}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ToastItem({ toast, onClose, onPause, onResume, motionOff, transition }) {
+  const x = useMotionValue(0);
+  const opacity = useTransform(x, [0, 120], [1, 0]);
+  const scale = useTransform(x, [0, 120], [1, 0.98]);
+  const close = useCallback(() => onClose(toast.id), [onClose, toast.id]);
+
+  return (
+    <motion.div
+      className={`toast toast-${toast.variant}`}
+      layout
+      initial={motionOff ? false : { opacity: 0, y: 10, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={motionOff ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.98 }}
+      transition={motionOff ? { duration: 0.01 } : transition}
+      style={{ x: motionOff ? 0 : x, opacity: motionOff ? 1 : opacity, scale: motionOff ? 1 : scale }}
+      drag={motionOff ? false : "x"}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.12}
+      onDragEnd={(_, info) => {
+        if (motionOff) return;
+        const offset = info.offset.x;
+        const velocity = info.velocity.x;
+        const throwIt = offset > 96 || velocity > 700;
+        if (throwIt) close();
+      }}
+      onPointerEnter={() => {
+        if (motionOff) return;
+        onPause(toast.id);
+      }}
+      onPointerLeave={() => {
+        if (motionOff) return;
+        onResume(toast.id);
+      }}
+    >
+      <div className="toastBody">
+        <div className="toastTitleRow">
+          <div className="toastTitle">{toast.title}</div>
+          <motion.button
+            className="toastClose"
+            type="button"
+            aria-label="Dismiss notification"
+            onClick={close}
+            whileHover={motionOff ? undefined : { y: -1 }}
+            whileTap={motionOff ? undefined : { scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 520, damping: 32 }}
+          >
+            ×
+          </motion.button>
+        </div>
+        <div className="toastMessage">{toast.message}</div>
+      </div>
+    </motion.div>
   );
 }
 
